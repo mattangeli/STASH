@@ -5,5 +5,7 @@ using namespace std;
 
 Block::Block()
 {
-    cout << "New Block created!" << endl;
+    #ifdef DEBUGBUILD
+        cout << "    DEBUG: new block created." << endl;
+    #endif
 }

@@ -5,8 +5,9 @@ using namespace std;
 
 int main()
 {
-    cout << "Hello World!" << endl;
-    cout << "Hello Quel Porco di Dio!" << endl;
+    #ifdef DEBUGBUILD
+        cout << "    DEBUG: entering main routine." << endl;
+    #endif
 
     Block helloworldBlock;
 
