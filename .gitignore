@@ -44,3 +44,6 @@ CMakeLists.txt.user*
 
 # Build files
 build/
+
+# MacOS junk files
+.DS_Store
