@@ -9,3 +9,6 @@ SOURCES += \
 
 HEADERS += \
     block.h
+
+DISTFILES += \
+    CMakeLists.txt
