@@ -5,7 +5,7 @@ using namespace std;
 
 int main()
 {
-    #ifdef DEBUGBUILD
+    #ifdef DEBUG
         cout << "    DEBUG: entering main routine." << endl;
     #endif
 
