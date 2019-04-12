@@ -23,13 +23,15 @@ qmake .. && make
 ./SimulationEngine
 ```
 
-and you should see some Hello World stuff. The Makefile has the usual syntax; to clan all the temporary files but not the final binary:
+and you should see some Hello World stuff.
+
+The Makefile has the usual syntax; to clan all the temporary files but not the final binary:
 
 ```
 make clean
 ```
 
-while instead of you want to clean everything:
+while instead if you want to clean everything:
 
 ```
 make distclean
