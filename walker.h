@@ -26,23 +26,24 @@ public:
     record{std::vector<float>(1)},
     positions{std::vector<int>(1)}, 
     skip{1}
-  {std::cout << "Ciao 1";}
+  {std::cout << "Ciao 1"<<" ";}
 
   //Constructor for history of positions and times
   history(const int len, const int pos): 
-    lenght{0},
+    lenght{1},
     record{std::vector<float>(2*len)},
     positions{std::vector<int>(len)},
     skip{2}
   {positions[0]=pos;
-    std::cout << "Ciao 2";}
+    std::cout << "Ciao 2"<<" ";}
   
   //These functions add the time spent in the que and  
   void addtimeque(const float T){record[skip*(lenght-1)]+=T;};
   void addtimeexe(const float T){record[skip*(lenght-1)+1]=T;};
-  int len(){return lenght;};
-  int sk(){return skip;};
-
+  const int len() const noexcept {return lenght;};
+  const int sk() const noexcept {return skip;};
+  const std::vector<int> get_positions() const noexcept { return    positions;   };
+  const std::vector<float> get_record() const noexcept { return    record;   };
   //This function update the position in the history of 
   //the walker
   void nextstep(const int npos){
@@ -50,8 +51,23 @@ public:
     record[skip*lenght]=0.0;
     lenght++;
   };
-};
+    
 
+};
+      
+std::ostream& operator<<(std::ostream& os, const history& v) {
+          os << v.len() << "  ";
+          for (const auto l : v.get_positions()){
+              os << l << "  ";
+          }
+          
+          for (const auto l : v.get_record()){
+              os << l << "  ";
+          }
+          
+    os << std::endl;
+    return os;
+    };
 // Operator overloading << for history, printing the history
 // of a walker
 /*std::ostream & operator<<(std::ostream &os, const history h){
@@ -156,6 +172,17 @@ public:
 
 int main(){
   Group test(5,1,1,1) ;
+    std::cout<<std::endl;
+    history hi;
+    std::cout<<hi ;
+    std::cout<<"nuova Histo"<<std::endl;
+    history hi1(4,5);
+    std::cout<<hi1 ;
+    std::cout<<"nuova Histo2"<<std::endl;
+    history hi2(4,5);
+    hi2.nextstep(66);
+    std::cout<<hi2 ;
+     std::cout<<hi2 ;
 }
 
 
