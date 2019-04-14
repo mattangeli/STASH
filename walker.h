@@ -82,11 +82,10 @@ public:
 //and resources allocated.
 ////////////////////////////////////////////////////////////////////////////
 class walker{
-  public:
   int parent_id, child_id, position, max_resources, type_resources;
   history hist;
   int * resources;
-
+  public:
 
   //Default constructor for a walker, it must be initialized before the 
   //walker is simulated
@@ -133,15 +132,15 @@ class walker{
 
 
 class Group{
-public:
   std::size_t _size, nwalker, queue_lenght;
   std::vector<walker> walker_list;
   std::vector<int> queue, status;
+public:
 
 
   
-  Group(const std::size_t init_lenght, const std::size_t hist_lenght, 
-	const std::size_t resource_types,  const std::size_t max_resources) : 
+  Group(const int init_lenght, const int hist_lenght, 
+	const int resource_types,  const int max_resources) : 
     walker_list{std::vector<walker>(init_lenght)}    ,
 	//    walker_list{std::vector<walker>(init_lenght)},/
     queue{std::vector<int>(init_lenght)}    ,
