@@ -2,7 +2,7 @@
 #include <vector>
 #include <memory>
 #include "block.h"
-
+#include "walker.h"
 using namespace std;
 
 int main()
@@ -35,6 +35,12 @@ int main()
     cout << endl << "Calling ABBA functions" << endl << endl;
     blocksVector[0]->ABBA();
     blocksVector[1]->ABBA();
-
+    
+    cout << "CCC START HERE "<<endl;
+    Group test(1,1);
+    test.create_walker(0,1,0,1,1);
+    test.create_walker(0,2,0,1,1);
+    test.print_status();
+    cout << "CCC ENDS HERE "<<endl;
     return 0;
 }

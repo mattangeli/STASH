@@ -1,9 +1,3 @@
 #include <iostream>
-#include "block.h"
+#include "walker.h"
 
-using namespace std;
-
-Block::Block()
-{
-    cout << "New Block created!" << endl;
-}

@@ -12,9 +12,11 @@ set(SOURCES
 
 # Header files
 include_directories(${PROJECT_SOURCE_DIR})
-#set(HEADERS
-#    block.h
-#)
+set(HEADERS
+    block.h
+    walker.h
+    history.h    
+)
 #
 #include_directory(.)
 #include_directory(${CMAKE_CURRENT_SOURCE_DIR})
