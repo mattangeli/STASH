@@ -24,13 +24,16 @@ Block::Block(int id, vector<int> idsOut, vector<float> probsOut)
             cout << "    DEBUG: the number of outer legs in the Block is " << this->nLegsOut << "." << endl;
         #endif
 
+
     } else {
         cout << "You are an idiot, the length of the input vectors in the Block class idsOut is not the same as probsOut!" << endl;
     }
 }
 
-taskBlock::taskBlock(int id, vector<int> idsOut, vector<float> probsOut) :
-    Block(id, idsOut, probsOut) {
+taskBlock::taskBlock(int id, vector<int> idsOut, vector<float> probsOut, vector<int> res_needed_) :
+    Block(id, idsOut, probsOut),
+	res_needed{res_needed_},
+	res_occup(res_needed_.size(),0) {
         #ifdef DEBUG
             cout << "    DEBUG: block is of type taskBlock." << endl;
          #endif
