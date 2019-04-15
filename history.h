@@ -24,7 +24,7 @@ public:
  history(): 
   lenght{0},
     record{std::vector<float>()},
-      positions{std::vector<int>()}, 
+    positions{std::vector<int>()}, 
 	_skip{1}
 	{}
 	
@@ -45,7 +45,7 @@ public:
   const std::vector<float>  get_record() const noexcept { return    record;   };
   //This function update the position in the history of 
   //the walker
-  void nextstep(const int npos){
+  void next_step(const int npos){
     lenght++;
     record.push_back(0.);
     record.push_back(0.);

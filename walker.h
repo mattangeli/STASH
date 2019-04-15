@@ -59,7 +59,14 @@ class walker{
   int get_child_id()const noexcept {return child_id;};
   int get_pos() const noexcept {return position;};
   const history  get_history() const noexcept {return hist;};
+  void addtq (const float time){hist.addtimeque(time);}
+  //moves the walker in the next position
+  void moveto(const int pos){
+    position=pos;
+    hist.next_step(pos);
+  };
   
+
 
 };
 
@@ -74,29 +81,36 @@ std::ostream& operator<<(std::ostream& os, const walker& w) {
 
 
 class Group{
-  int _size, nwalker, queue_lenght;
+  int nwalker;
   std::vector<walker> walker_list;
   std::vector<int> queue, status;
  public:
-  
-  
-  
- Group(const int resource_types,  const int max_resources) : 
+   Group(const int resource_types,  const int max_resources) : 
   walker_list{std::vector<walker>()}    ,
     //    walker_list{std::vector<walker>(init_lenght)},/
     queue{std::vector<int>()}    ,
     status{std::vector<int> ()}    ,
-    nwalker{0},
-    queue_lenght{0}
+    nwalker{0}
     {}
     
     void create_walker(const int pos, const int par_id,
 		       const int ch_id, const int r_types,  const int max_r){
       walker_list.push_back(walker(pos,par_id, ch_id, r_types,max_r));
       status.push_back(0);
-      queue_lenght++;
       nwalker++;
       queue.push_back(nwalker-1);
+    };
+
+    void add_time_queue(const float time){
+      for (auto i=0;i<nwalker;i++)
+	if (status[i]==0)
+	  walker_list[i].addtq(time);
+    };
+
+    void move_walker(const int id, const int pos){
+      walker_list[id].moveto(pos);
+      queue.push_back(id);
+      status[id]=0;
     };
     
     void print_status(){

@@ -103,8 +103,14 @@ int main()
 
 	cout << "CCC START HERE "<<endl;
 	Group test(1,1);
-	test.create_walker(0,1,0,1,1);
-	test.create_walker(0,2,0,1,1);
+	test.create_walker(5,0,0,1,1);
+	test.create_walker(2,1,0,1,1);
+	test.add_time_queue(0.45);
+	test.move_walker(1,33);
+	test.add_time_queue(0.35);
+	test.move_walker(1,35);
+	test.move_walker(0,12);
+	test.add_time_queue(0.35);
 	test.print_status();
 	cout << "CCC ENDS HERE "<<endl;
 	
