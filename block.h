@@ -26,7 +26,17 @@ public:
 
 	virtual void resources_release(Resources&) {
         cout << "Me neither" << endl;
-    }
+	}
+
+	virtual vector<int> get_needed_res(int length) {
+		vector<int> outvec(length,0);
+		return outvec;
+	}
+
+	int get_next_id() {
+		return idsOut[0];
+	}
+   
 };
 
 
@@ -87,6 +97,15 @@ public:
 	void resources_release(Resources& resource_) {
 		cout << "Releasing the resources of Block " << id << endl;
 		resource_.res_release(res_occup);
+	}
+
+
+	vector<int> get_needed_res(int length) {
+		if (length != res_needed.size()) {
+			cout << "Integer provided to get_needed_res does not agree with resource vector length" << endl;
+		}
+		
+		return res_needed;
 	}
 	
 

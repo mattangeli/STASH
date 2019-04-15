@@ -17,6 +17,8 @@ int main()
     vector<float> probsOut(3);
 //    Block helloworldBlock(0, idsOut, probsOut);
 
+	idsOut[0]= 656;
+
 	vector<int> res_tot(3);
 	vector<int> res_need1(3);
 	vector<int> res_need2(3);
@@ -100,6 +102,13 @@ int main()
 	blocksVector[2]->resources_release(res_type);
 	hihi = res_type.avail();
 	cout << "Now we have available " << hihi[0] << "  " << hihi[1] << "  " << hihi[2] << endl;
+
+	//Test for returning needed resources
+	auto testreturn = blocksVector[1]->get_needed_res(3);
+	cout << "We need " << testreturn[0] << "  " << testreturn[1] << "  " << testreturn[2] << endl;
+
+	//Test returning next id
+	cout << "Next we go to Block " << blocksVector[2]->get_next_id() << endl;
 
 	cout << "CCC START HERE "<<endl;
 	Group test(1,1);
