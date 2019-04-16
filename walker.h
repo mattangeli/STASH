@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>         
 #include "history.h"
+#include "cassert"
 
 
 //////////////////////
@@ -63,6 +64,7 @@ class walker{
   void addtq (const float time){hist.addtimeque(time);}
   //moves the walker in the next position
   void moveto(const int pos){
+    // if pos negative ??
     position=pos;
     hist.next_step(pos);
   };
@@ -157,6 +159,49 @@ class Group{
 
 };
 
+/*
+class Wlk_Resources{
+   int ntype_res, num_tot_res, num_res_alloc ;
+   std::vector<int> resources; 
+
+   public:
+     // default constructor
+     Wlk_Resources():
+      ntype_res=1,
+      num_tot_res=10,
+      num_res_alloc=0,
+      resources{std::vector<int>(ntype_res,0)}
+      {}
+     // constuctor with len and res
+     Wlk_Resources(int _ntype_res, int _num_tot_res):
+      ntype_res{_ntype_res},
+      num_tot_res{_num_tot_res},
+      num_res_alloc{0},
+      resources{std::vector<int>(_ntype_res,0)}
+      {}
+     // function to add resources the typeof res is an int?
+
+    void add_res(int tres, int nres, Resources * global_res ){ // tres type resources to alloc nres how much of it
+       assert( tres < ntype_res);
+       vector<int> needed(ntype_res,0);
+       needed[tres]=nres;
+       global_res->res_allocate(needed,resources);
+    } 
+ 
+//release resources not really needed just call the function in the REs Container
+    void release_res(Resources * global_res){
+        global_res-> res_release(resources);
+
+    }
+    void add_res(vector<int> const& needed , Resources * global_res){
+       assert( needed.size() == global_res->get_ntype() );
+       assert( needed.size() == resources.size() );
+        
+       global_res->res_allocate(needed,resources);
+      
+    }
+
+}
 
 
 /*

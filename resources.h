@@ -22,6 +22,8 @@ public:
 	vector<int> avail(){
 		return available;
 	}
+        
+        int const  get_ntype(){return available.size();}
 
 	//This function allocates resources. The input arguments are the needed resources (total need)
 	//and a vector containing the resources that are already allocated to the process asking for the resources.
