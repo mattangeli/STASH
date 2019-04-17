@@ -31,7 +31,7 @@ public:
         return available;
     }
 
-    int get_ntype(){return available.size();}
+    std::vector<int>::size_type get_ntype(){return available.size();}
 
     /* This function allocates resources. The input arguments are the needed
      * resources (total need) and a vector containing the resources that are

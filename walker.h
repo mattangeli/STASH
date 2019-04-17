@@ -187,7 +187,7 @@ class Wlk_Resources{
       {}
      // function to add resources the typeof res is an int?
      Wlk_Resources(Resources * global_res, int _num_tot_res):
-      ntype_res{global_res->get_ntype()},
+      ntype_res{(int)global_res->get_ntype()},
       num_tot_res{_num_tot_res},
       num_res_alloc{0},
       resources{std::vector<int>(ntype_res,0)}
