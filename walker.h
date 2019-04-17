@@ -6,6 +6,7 @@
 #include <memory>         
 #include "history.h"
 #include <cassert>
+#include "resources.h"
 
 /*--------------------
      Walker Class
@@ -163,17 +164,18 @@ public:
 
 };
 
-/*
+
+
 class Wlk_Resources{
    int ntype_res, num_tot_res, num_res_alloc ;
-   std::vector<int> resources;
+   std::vector<int> resources; 
 
    public:
      // default constructor
      Wlk_Resources():
-      ntype_res=1,
-      num_tot_res=10,
-      num_res_alloc=0,
+      ntype_res{1},
+      num_tot_res{10},
+      num_res_alloc{0},
       resources{std::vector<int>(ntype_res,0)}
       {}
      // constuctor with len and res
@@ -184,14 +186,20 @@ class Wlk_Resources{
       resources{std::vector<int>(_ntype_res,0)}
       {}
      // function to add resources the typeof res is an int?
+     Wlk_Resources(Resources * global_res, int _num_tot_res):
+      ntype_res{global_res->get_ntype()},
+      num_tot_res{_num_tot_res},
+      num_res_alloc{0},
+      resources{std::vector<int>(ntype_res,0)}
+      {std::cout<<"constr con il Resurces *"<<std::endl;}
 
     void add_res(int tres, int nres, Resources * global_res ){ // tres type resources to alloc nres how much of it
        assert( tres < ntype_res);
        vector<int> needed(ntype_res,0);
        needed[tres]=nres;
        global_res->res_allocate(needed,resources);
-    }
-
+    } 
+ 
 //release resources not really needed just call the function in the REs Container
     void release_res(Resources * global_res){
         global_res-> res_release(resources);
@@ -200,15 +208,28 @@ class Wlk_Resources{
     void add_res(vector<int> const& needed , Resources * global_res){
        assert( needed.size() == global_res->get_ntype() );
        assert( needed.size() == resources.size() );
-
+        
        global_res->res_allocate(needed,resources);
+      
+    }
+    std::vector<int>  get_resources() const {
+       return resources;
+    } 
 
+    std::vector<int> get_variables() const { // return all  the other protected variables in a vector [ntype_res, num_tot_res, num_res_alloc] 
+       std::vector<int> var{ntype_res, num_tot_res, num_res_alloc};
+       return var;
     }
 
-}
+};
 
+template <class T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec);
 
+std::ostream& operator<<(std::ostream& os, const Wlk_Resources& res);
 
+ 
+/*
 int main(){
   Group test(5,1,1,1) ;
     std::cout<<std::endl;
@@ -223,9 +244,32 @@ int main(){
     std::cout<<hi1 ;
      std::cout<<hi2 ;
 
+
+ std::vector<int> invec(3,0);
+ for(unsigned int i=0 ; i<invec.size() ; i++ ){
+    invec[i]=3*i+1;
+  }
+ Resources *pgres = new Resources(invec) ; 
+ Wlk_Resources wlk_res(pgres,9);
+ std::cout<<"initial  "<<wlk_res<<std::endl;
+ std::vector<int> needed{0,1,3};
+ wlk_res.add_res(needed,pgres);
+
+ std::cout<<"final "<<wlk_res<<std::endl;
+ 
+ wlk_res.release_res(pgres);
+
+ 
+ std::cout<<"after rel  "<<wlk_res<<std::endl;
+ int tres{2},nres{5} ;
+ //int tres{39},nres{5} ;
+ wlk_res.add_res(tres,nres,pgres);
+
+ std::cout<<"final "<<wlk_res<<std::endl;
 }
 
 */
+  
 
 
 
