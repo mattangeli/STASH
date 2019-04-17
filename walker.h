@@ -26,33 +26,33 @@ class walker{
     child_id{0}, 
     position{-1},
       destination{-1},
-    hist{history()},
     max_resources{0}, 
-    type_resources{0}
+    type_resources{0},
+    hist{history()}
   {}
   //Basilar constructor for the walker, it creates an unitialized but
   //working walker
  walker(const int r_types,  const int max_r):
-    hist{history()},
-    resources{new int [max_r*r_types]},
-    position{-1},
-    destination{-1},
     parent_id{0},
     child_id{0},
+    position{-1},
+    destination{-1},
     max_resources{max_r}, 
-    type_resources{r_types}
+    type_resources{r_types},
+    hist{history()},
+    resources{new int [max_r*r_types]}
     {}
 
   //This constructor creates and initialize a walker
   walker(const int pos, const int par_id,
 	 const int ch_id, const int r_types,  const int max_r):
-    hist{history(pos)},
-    resources{new int [max_r*r_types]},
-    position{pos},
     parent_id{par_id},
     child_id{ch_id},
+    position{pos},
     max_resources{max_r}, 
-    type_resources{r_types}
+    type_resources{r_types},
+    hist{history(pos)},
+    resources{new int [max_r*r_types]}
   {}
 
   int get_parent_id() const noexcept {return parent_id;};
@@ -97,13 +97,13 @@ class Group{
   std::vector<float> exec_time;
  public:
    Group(const int resource_types,  const int max_resources) : 
+  nwalker{0},
   walker_list{std::vector<walker>()}    ,
     //    walker_list{std::vector<walker>(init_lenght)},/
     queue{std::vector<int>()}    ,
     status{std::vector<int> ()}    ,
       running{std::vector<int>()},
-      exec_time{std::vector<float>()},
-      nwalker{0}
+      exec_time{std::vector<float>()}
     {}
     
     void create_walker(const int pos, const int par_id,
@@ -152,7 +152,7 @@ class Group{
 
 
     void print_status(){
-    for (auto i=0;i<walker_list.size();i++)
+    for (auto i=0;i<(int)walker_list.size();i++)
       std::cout<< i <<" "<<walker_list[i]<< status[i]<<std::endl;
   };
 
@@ -204,7 +204,7 @@ class Wlk_Resources{
 }
 
 
-/*
+
 int main(){
   Group test(5,1,1,1) ;
     std::cout<<std::endl;

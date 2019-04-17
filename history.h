@@ -23,17 +23,17 @@ public:
   //default constructor
  history(): 
   lenght{0},
+    _skip{1},
     record{std::vector<float>()},
-    positions{std::vector<int>()}, 
-	_skip{1}
+    positions{std::vector<int>()}
 	{}
 	
 	//Constructor for history of positions and times
  history(const int pos): 
      lenght{1},
+       _skip{2},
        record{std::vector<float>(2,0.)},
-	 positions{std::vector<int>(1,0)},
-    _skip{2}
+     positions{std::vector<int>(1,0)}
   {positions[0]=pos;}
   
   //These functions add the time spent in the que and  

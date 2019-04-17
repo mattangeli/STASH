@@ -101,7 +101,7 @@ public:
 
 
 	vector<int> get_needed_res(int length) {
-		if (length != res_needed.size()) {
+        if (length != (int)res_needed.size()) {
 			cout << "Integer provided to get_needed_res does not agree with resource vector length" << endl;
 		}
 		

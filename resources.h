@@ -23,7 +23,7 @@ public:
 		return available;
 	}
         
-        int const  get_ntype(){return available.size();}
+        int get_ntype(){return available.size();}
 
 	//This function allocates resources. The input arguments are the needed resources (total need)
 	//and a vector containing the resources that are already allocated to the process asking for the resources.
@@ -40,7 +40,7 @@ public:
 		cout << "Allocated the following resources:" << endl;
 
 		//Go through all the types of resources
-		for (int ii=0; ii < available.size(); ii++){
+        for (int ii=0; ii < (int)available.size(); ii++){
 			if (available[ii] >= (needed[ii] - occup[ii] )) {
 				available[ii] -= (needed[ii] - occup[ii] );
 				cout << ii << ": " << (needed[ii] - occup[ii] )  << endl;
@@ -60,11 +60,11 @@ public:
 	//This function releases the resources in the input vector
 	void res_release(vector<int>& occup) {
 		//Dimension check
-		if (available.size() != occup.size()) {
+        if (available.size() != occup.size()) {
 			cout << "Input vectors to function 'release' in Resource class have wrong length" << endl;
 		}
 
-		for (int ii=0; ii < available.size(); ii++){
+        for (int ii=0; ii < (int)available.size(); ii++){
 			available[ii] += occup[ii];
 			occup[ii] = 0;
 		} 
