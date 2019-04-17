@@ -8,11 +8,15 @@ QMAKE_CXXFLAGS_DEBUG += -DDEBUG
 QMAKE_CXXFLAGS_RELEASE -= -DDEBUG
 
 SOURCES += \
-        main.cpp \
-    block.cpp
+    main.cpp \
+    block.cpp \
+    walker.cpp
 
 HEADERS += \
-    block.h
+    block.h \
+    history.h \
+    resources.h \
+    walker.h
 
 DISTFILES += \
     CMakeLists.txt
