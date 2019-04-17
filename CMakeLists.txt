@@ -8,6 +8,8 @@ set(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=c++0x")
 set(SOURCES
     main.cpp
     block.cpp
+    walker.cpp
+    history.cpp
 )
 
 # Header files

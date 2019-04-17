@@ -10,7 +10,8 @@ QMAKE_CXXFLAGS_RELEASE -= -DDEBUG
 SOURCES += \
     main.cpp \
     block.cpp \
-    walker.cpp
+    walker.cpp \
+    history.cpp
 
 HEADERS += \
     block.h \
