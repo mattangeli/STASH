@@ -49,6 +49,44 @@ public:
         return idsOut[0];
     }
 
+	//Return time needed for this Block
+	//Standard is 0 (time needed for gates)
+	virtual float processing_time() {
+		return 0.0;
+	}
+
+	/*
+	The next function returns whether or not we can continue
+	to the next Block. This is important,
+	since at the merging AND gate we might need
+	to wait until we have processes in all (both)
+	incoming legs. The standard is true, since taskgates
+	have only one incoming leg and so we don't need to wait.
+	NOTE: This is not related to resources in any way.
+	HOWEVER: We can implement this using resources:
+	Consider the following scenario:
+
+			  ______
+		A-->--|     |
+			  | AND |--->--- C  
+		B-->--|_____|
+
+	Now we could make a resource type for both incoming legs A and B.
+	One a process arrives at the gate, we increase the respective resource 
+	type by one quantitiy. Moreover we can say that the AND gate is a process
+	that requires one resource of type A and one of type B. 
+	If they are available, we take them and we can continue to C. 
+	Note that this process is destroying a walker. 
+	To do it with the resources we need to tell the gate at initialization which are 
+	the resource types that belong to the gate.	
+	
+
+	//DON'T USE THIS FUNCTION, NOT FINISHED YET
+	virtual bool can_continue() {
+		return true;
+	}
+	*/
+
 };
 
 
@@ -113,6 +151,13 @@ public:
         }
         return res_needed;
     }
+
+	//Return the time needed to complete this task
+	float processing_time() {
+		//Here we should get a random number according to some distribution
+		return id*3.14159265359;
+	}
+
 };
 
 
@@ -126,5 +171,16 @@ public:
     }
 };
 
+
+/* Merging AND gateway */
+class mergandBlock : public Block {
+private:    
+	vector<int> resource_types;
+public:
+    mergand(int, vector<int>, vector<float>, vector<int>);
+    void ABBA() {
+        cout << "I'm a mergand Block and I suck the most!" << endl;
+    }
+};
 
 #endif // BLOCK_H

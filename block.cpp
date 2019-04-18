@@ -45,3 +45,12 @@ xorBlock::xorBlock(int id, vector<int> idsOut, vector<float> probsOut) :
 }
 
 
+mergandBlock::mergandBlock(int id, vector<int> idsOut, vector<float> probsOut, vector<int> resource_types_) :
+    Block(id, idsOut, probsOut),
+	resource_types{resource_types_} {
+    #ifdef DEBUG
+        cout << "    DEBUG: block is of type mergandBlock." << endl;
+    #endif
+}
+
+
