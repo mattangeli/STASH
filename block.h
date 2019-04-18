@@ -177,7 +177,7 @@ class mergandBlock : public Block {
 private:    
 	vector<int> resource_types;
 public:
-    mergand(int, vector<int>, vector<float>, vector<int>);
+    mergandBlock(int, vector<int>, vector<float>, vector<int>);
     void ABBA() {
         cout << "I'm a mergand Block and I suck the most!" << endl;
     }
