@@ -72,7 +72,7 @@ public:
     void addtq (const float time){hist.addtimeque(time);}
     /* Moves the walker in the next position */
     void moveto(const int pos){
-        // if pos negative ??
+        assert(pos >= 0);// if pos negative ?? 
         position=pos;
         hist.next_step(pos);
     }
@@ -158,7 +158,7 @@ public:
 
     void print_status(){
         for (auto i=0;i<(int)walker_list.size();i++)
-            std::cout<< i <<" "<<walker_list[i]<< status[i]<<std::endl;
+            std::cout<< i <<" "<<walker_list[i]<<" "<< status[i]<<std::endl;
     }
 
 
@@ -191,7 +191,11 @@ class Wlk_Resources{
       num_tot_res{_num_tot_res},
       num_res_alloc{0},
       resources{std::vector<int>(ntype_res,0)}
-      {std::cout<<"constr con il Resurces *"<<std::endl;}
+      {
+#ifdef DEBUG
+          std::cout<<"constr con il Resurces *"<<std::endl;
+#endif
+          }
 
     void add_res(int tres, int nres, Resources * global_res ){ // tres type resources to alloc nres how much of it
        assert( tres < ntype_res);

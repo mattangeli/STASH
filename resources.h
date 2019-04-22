@@ -22,9 +22,11 @@ private:
 public:
     Resources(vector<int> const & invec) :
         available{invec} {
+#ifdef DEBUG
         cout << "Resources succesfully initialized" << endl;
         cout << "The resources available are:" << endl;
         cout << available[0] << "	" << available[1] <<  "	" << available[2] << endl;
+#endif
     }
 
     vector<int> avail(){
@@ -42,11 +44,12 @@ public:
      */
     void res_allocate(vector<int> const& needed, vector<int>& occup) {
         /* Dimension checks */
-        if (needed.size() != occup.size() ||
-                needed.size() != available.size() ) {
+        assert(needed.size() == occup.size() || needed.size() == available.size());
+        //if (needed.size() != occup.size() ||
+        //        needed.size() != available.size() ) {
 
-            cout << "Input vectors to function 'allocate' in Resource class have wrong length" << endl;
-        }
+        //    cout << "Input vectors to function 'allocate' in Resource class have wrong length" << endl;
+        //}
 
         cout << "Allocated the following resources:" << endl;
 
@@ -71,9 +74,10 @@ public:
     /* This function releases the resources in the input vector */
     void res_release(vector<int>& occup) {
         /* Dimension check */
-        if (available.size() != occup.size()) {
-            cout << "Input vectors to function 'release' in Resource class have wrong length" << endl;
-        }
+        assert(available.size() == occup.size());
+        //if (available.size() != occup.size()) {
+        //    cout << "Input vectors to function 'release' in Resource class have wrong length" << endl;
+        //}
 
         for (int ii=0; ii < (int)available.size(); ii++){
             available[ii] += occup[ii];
