@@ -144,6 +144,7 @@ std::ostream& operator<<(std::ostream& os, const walker& w) {
     void Group::end_process(const int id, const int running_pos){
         walker_list[id].stop();
         status[id]=0;
+        res_list.erase(res_list.begin()+id);
         running.erase(running.begin()+running_pos);
         exec_time.erase(exec_time.begin()+running_pos);
     }
