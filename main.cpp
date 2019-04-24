@@ -112,8 +112,13 @@ int main()
 
 	cout << "CCC START HERE "<<endl;
 	Group test(1,1);
-	test.create_walker(5,0,0,1,1);
-	test.create_walker(2,1,0,1,1);
+    std::vector<int> invec(3,0);
+    for(unsigned int i=0 ; i<invec.size() ; i++ ){
+       invec[i]=3*i+1;
+     }
+    Resources *pgres = new Resources(invec) ;
+    test.create_walker(5,0,0,1,1,pgres);
+    test.create_walker(2,1,0,1,1,pgres);
 	test.add_time_queue(0.45);
 	test.move_walker(1,33);
 	test.add_time_queue(0.35);
@@ -123,6 +128,33 @@ int main()
 	test.print_status();
 	cout << "CCC ENDS HERE "<<endl;
 	
+
+
+   //TEST WALKER
+
+  cout << "TEST FOR Wlk_Resources "<<endl;
+  //  std::vector<int> invec(3,0);
+  //  for(unsigned int i=0 ; i<invec.size() ; i++ ){
+  //     invec[i]=3*i+1;
+  //   }
+  //  Resources *pgres = new Resources(invec) ;
+    //Wlk_Resources wlk_res(pgres,9);
+    Wlk_Resources wlk_res(pgres);
+    std::cout<<"initial  "<<wlk_res<<std::endl;
+    std::vector<int> needed{0,1,3};
+    wlk_res.add_res(needed,pgres);
+
+    std::cout<<"final "<<wlk_res<<std::endl;
+
+    wlk_res.release_res(pgres);
+
+
+    std::cout<<"after rel  "<<wlk_res<<std::endl;
+    int tres{2},nres{5} ;
+    //int tres{39},nres{5} ;
+    wlk_res.add_res(tres,nres,pgres);
+
+    std::cout<<"final "<<wlk_res<<std::endl;
 
     return 0;
 }
