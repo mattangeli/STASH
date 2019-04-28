@@ -110,6 +110,8 @@ int main()
 	//Test returning next id
 	cout << "Next we go to Block " << blocksVector[2]->get_next_id() << endl;
 
+
+	/*
 	cout << "CCC START HERE "<<endl;
 	Group test(1,1);
     std::vector<int> invec(3,0);
@@ -155,6 +157,6 @@ int main()
     wlk_res.add_res(tres,nres,pgres);
 
     std::cout<<"final "<<wlk_res<<std::endl;
-
+	*/
     return 0;
 }

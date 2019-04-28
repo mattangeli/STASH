@@ -1,58 +1,44 @@
 #include <iostream>
 #include "walker.h"
 
+//Esattamente perche' abbiamo ridefinito questo operatore per un generico vettore?
 template <class T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec){
 
   for(auto i : vec){
-     os<<i<<"  ";
-
+    os<<i<<"  ";
+    
   }
   return os;
 }
 
-    /* Default constructor for a walker, it must be initialized before the
-     * walker is simulated.
-     */
-    walker::walker():
-        parent_id{0},
-        child_id{0},
-        position{-1},
-        destination{-1},
-        max_resources{0},
-        type_resources{0},
-        hist{history()}
-    {}
+/* Default constructor for a walker, it must be initialized before the
+ * walker is simulated.
+ */
+walker::walker():
+  parent_id{0},
+	child_id{0},
+	position{-1},
+	destination{-1},
+	hist{history()},
+	alloc_res{Wlk_Resources()}
+{}
 
-    /* Basilar constructor for the walker, it creates an unitialized but
-     * working walker.
-     */
-    walker::walker(const int r_types,  const int max_r):
-        parent_id{0},
-        child_id{0},
-        position{-1},
-        destination{-1},
-        max_resources{max_r},
-        type_resources{r_types},
-        hist{history()},
-        resources{new int [max_r*r_types]}
-    {}
 
     /* This constructor creates and initialize a walker */
-    walker::walker(const int pos, const int par_id,
-           const int ch_id, const int r_types,  const int max_r):
-        parent_id{par_id},
+walker::walker(const int pos, const int par_id,
+	       const int ch_id):
+  parent_id{par_id},
         child_id{ch_id},
         position{pos},
-        max_resources{max_r},
-        type_resources{r_types},
         hist{history(pos)},
-        resources{new int [max_r*r_types]}
+	alloc_res{Wlk_Resources()}
     {}
 
-    int walker::get_parent_id() const noexcept {return parent_id;}
-    int walker::get_child_id() const noexcept {return child_id;}
-    int walker::get_pos() const noexcept {return position;}
+int walker::get_parent_id() const noexcept {return parent_id;}
+int walker::get_child_id() const noexcept {return child_id;}
+int walker::get_pos() const noexcept {return position;}
+int walker::get_destination() const noexcept {return destination;}
     const history  walker::get_history() const noexcept {return hist;}
 
 
@@ -64,18 +50,23 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec){
         hist.next_step(pos);
     }
 
-    void walker::start(const float time, const int dest, const std::vector<int> res){
+
+/*We have to think to something in the case after this process we have to create
+ a son walker */
+void walker::start(const float time, const int dest, const Wlk_Resources res){
         /* Maybe we could say that destination -1 is the end? */
         destination=dest;
         hist.addtimeexe(time);
+	alloc_res=res;
     }
+
     /* add here resources as output */
-    void walker::stop (){
-        moveto(destination);
-    }
-
-
-
+void walker::stop (Wlk_Resources res){
+  //do we need to enforce a deep copy?
+  res=alloc_res;
+  if (destination!=-1) moveto(destination);
+  alloc_res=Wlk_Resources();
+}
 
 
 /* Overload the << operator for the walker */
@@ -90,70 +81,108 @@ std::ostream& operator<<(std::ostream& os, const walker& w) {
 
 
 
-    Group::Group(const int resource_types,  const int max_resources) :
-        nwalker{0},
-        walker_list{std::vector<walker>()}    ,
+Group::Group() :
+  nwalker{0},
+  next_to_finish{-1},
+  totwalker{0},
+  walker_list{std::vector<walker>()}    ,
         //    walker_list{std::vector<walker>(init_length)},/
-        res_list{std::vector<Wlk_Resources>()},
-        queue{std::vector<int>()}    ,
-        status{std::vector<int> ()}    ,
-        running{std::vector<int>()},
-        exec_time{std::vector<float>()}
-    {}
-
-    void Group::create_walker(const int pos, const int par_id,
-                       const int ch_id, const int r_types,  const int max_r, Resources * global_Res){
-        walker_list.push_back(walker(pos,par_id, ch_id, r_types,max_r));
-        res_list.push_back(Wlk_Resources(global_Res));
-        status.push_back(0);
-        nwalker++;
-        queue.push_back(nwalker-1);
-    }
-
-    void Group::add_time_queue(const float time){
-        /* Add the time to the processes in the queue */
-        for (auto i=0;i<nwalker;i++)
-            if (status[i]==0)
-                walker_list[i].addtq(time);
-        /* removes from the remaining execution time the time
-         * spent waiting for the next action.
-         */
-        for (auto  i=exec_time.begin();i!=exec_time.end();i++)
-            *i-=time;
-    }
-
-    void Group::move_walker(const int id, const int pos){
-        walker_list[id].moveto(pos);
-        queue.push_back(id);
-        status[id]=0;
-    }
-
-    void Group::activate_process(const int id, const float t, const int dest,
-                          const int queue_pos, const std::vector<int> res){
-        status[id]=1;
-        queue.erase(queue.begin()+queue_pos);
-        running.push_back(id);
-        exec_time.push_back(t);
-        walker_list[id].start(t,dest,res);
-    }
-
-    /* Maybe at the end of this we shoud free the resources
-     * running_pos is the position in the vector of running
-     * processes.
-     */
-    void Group::end_process(const int id, const int running_pos){
-        walker_list[id].stop();
-        status[id]=0;
-        res_list.erase(res_list.begin()+id);
-        running.erase(running.begin()+running_pos);
-        exec_time.erase(exec_time.begin()+running_pos);
-    }
+  queue{std::vector<int>()}    ,
+  status{std::vector<int> ()}    ,
+  running{std::vector<int>()} ,
+  exec_time{std::vector<float>()}
+{}
 
 
-    void Group::print_status(){
-        for (auto i=0;i<(int)walker_list.size();i++)
-            std::cout<< i <<" "<<walker_list[i]<<" "<< status[i]<<std::endl;
-    }
+void Group::evolve(){
+}
+
+
+void Group::create_walker(const int pos, const int par_id,
+			  const int ch_id){
+  walker_list.push_back(walker(pos,par_id, ch_id));
+  status.push_back(0);
+  nwalker++;
+  totwalker++;
+  //maybe if "pos" is a logic gate we can put it at the top of the cue ;)
+  queue.push_back(nwalker-1);
+}
+
+void Group::add_time_queue(const float time){
+  /* Add the time to the processes in the queue */
+  for (auto i=0;i<nwalker;i++)
+    if (status[i]==0)
+      walker_list[i].addtq(time);
+  /* removes from the remaining execution time the time
+   * spent waiting for the next action.
+   */
+  for (auto  i=exec_time.begin();i!=exec_time.end();i++)
+    *i-=time;
+}
+
+/*
+void Group::move_walker(const int id){
+  if (pos!=-1){
+    walker_list[id].moveto(pos);
+    //maybe if "pos" is a logic gate we can put it at the top of the cue ;)
+    queue.push_back(id);
+    status[id]=0;
+  } 
+  else {
+    //write history
+    walker_list.erase(walker_list.begin()+id)
+    status.erase(status.begin()+id);
+    group.erased_update(id);
+    
+  }
+  }*/
+
+void Group::activate_process(const int id, const float t, const int dest,
+			     const int queue_pos, const Wlk_Resources res){
+  status[id]=1;
+  queue.erase(queue.begin()+queue_pos);
+  running.push_back(id);
+  exec_time.push_back(t);
+  walker_list[id].start(t,dest,res);
+}
+
+/* Maybe at the end of this we shoud free the resources
+ * running_pos is the position in the vector of running
+ * processes.
+ */
+void Group::end_process(const int running_pos){
+  int id{running[running_pos]};
+  Wlk_Resources res;
+  walker_list[id].stop(res);
+  //free the resources
+  running.erase(running.begin()+running_pos);
+  exec_time.erase(exec_time.begin()+running_pos);
+  status[id]=0;
+  if (walker_list[id].get_destination()==-1){
+    //print history
+    walker_list.erase(walker_list.begin()+id);
+    status.erase(status.begin()+id);                                                                                                                 
+    erased_update(id);
+    nwalker--;
+  }
+}
+
+
+void Group::print_status(){
+  for (auto i=0;i<(int)walker_list.size();i++)
+    std::cout<< i <<" "<<walker_list[i]<<" "<< status[i]<<std::endl;
+}
+
+
+void Group::erased_update(const int id){
+  for (auto  i=running.begin();i!=running.end();i++)
+    if (*i>id) *i--;
+  for (auto  i=queue.begin();i!=queue.end();i++)
+    if (*i>id) *i--;
+  /*  for (auto  i=walker_list.begin()+id;i!=running.end();i++)
+    *i.check_parent_sons(id);
+    */
+}
 
 
 
