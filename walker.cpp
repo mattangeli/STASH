@@ -61,9 +61,9 @@ void walker::start(const float time, const int dest, const Wlk_Resources res){
     }
 
     /* add here resources as output */
-void walker::stop (Wlk_Resources res){
+void walker::stop (Wlk_Resources * res){
   //do we need to enforce a deep copy?
-  res=alloc_res;
+  *res=alloc_res;
   if (destination!=-1) moveto(destination);
   alloc_res=Wlk_Resources();
 }
@@ -71,11 +71,12 @@ void walker::stop (Wlk_Resources res){
 
 /* Overload the << operator for the walker */
 std::ostream& operator<<(std::ostream& os, const walker& w) {
-    os << w.get_parent_id() << "  ";
-    os << w.get_child_id() << "  ";
-    os << w.get_pos() << "  ";
-    os << w.get_history() << " ";
-    return os;
+  
+  os << "par_id " << w.get_parent_id() << "  ";
+  os << "child_id " <<w.get_child_id() << "  ";
+  os << "pos " <<w.get_pos() << "  ";
+  os << "history " <<w.get_history() << " ";
+  return os;
 }
 
 
@@ -98,9 +99,15 @@ void Group::evolve(){
 }
 
 
+
+
 void Group::create_walker(const int pos, const int par_id,
 			  const int ch_id){
-  walker_list.push_back(walker(pos,par_id, ch_id));
+
+  if (par_id>=0)
+    walker_list.push_back(walker(pos,par_id, ch_id));
+  else
+    walker_list.push_back(walker(pos,totwalker, ch_id));
   status.push_back(0);
   nwalker++;
   totwalker++;
@@ -150,9 +157,8 @@ void Group::activate_process(const int id, const float t, const int dest,
  * running_pos is the position in the vector of running
  * processes.
  */
-void Group::end_process(const int running_pos){
+void Group::end_process(const int running_pos, Wlk_Resources * res){
   int id{running[running_pos]};
-  Wlk_Resources res;
   walker_list[id].stop(res);
   //free the resources
   running.erase(running.begin()+running_pos);

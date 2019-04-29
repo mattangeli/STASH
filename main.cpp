@@ -12,7 +12,7 @@ int main()
     #ifdef DEBUG
         cout << "    DEBUG: entering main routine." << endl;
     #endif
-
+	/*
     vector<int> idsOut(3);
     vector<float> probsOut(3);
 //    Block helloworldBlock(0, idsOut, probsOut);
@@ -110,28 +110,45 @@ int main()
 	//Test returning next id
 	cout << "Next we go to Block " << blocksVector[2]->get_next_id() << endl;
 
-
-	/*
+*/
+ 	
 	cout << "CCC START HERE "<<endl;
-	Group test(1,1);
-    std::vector<int> invec(3,0);
-    for(unsigned int i=0 ; i<invec.size() ; i++ ){
-       invec[i]=3*i+1;
-     }
-    Resources *pgres = new Resources(invec) ;
-    test.create_walker(5,0,0,1,1,pgres);
-    test.create_walker(2,1,0,1,1,pgres);
-	test.add_time_queue(0.45);
-	test.move_walker(1,33);
-	test.add_time_queue(0.35);
-	test.move_walker(1,35);
-	test.move_walker(0,12);
-	test.add_time_queue(0.35);
-	test.print_status();
+
+	Group bla;
+	Wlk_Resources pippo(2,1), paperino;
+
+	bla.create_walker(0,-1,0);
+	bla.create_walker(0,1,1);
+	bla.add_time_queue(1.5);
+	bla.activate_process(1, 2.2, 1, 1, pippo);
+	bla.add_time_queue(1.2);
+	bla.end_process(0, &pippo);
+	bla.print_status();
+	//Peche' non riesco ad iniziare un nuovo processo???
+	//	bla.activate_process(1, 0.2, -1, 1, pippo);
+	//	bla.end_process(0, &pippo);
+	//	cout << "Pippo "<< pippo << endl;
+	//cout << "Paperino " << paperino <<endl;
+
+
+	//    std::vector<int> invec(3,0);
+	//for(unsigned int i=0 ; i<invec.size() ; i++ ){
+	//invec[i]=3*i+1;
+	//}
+	//Resources *pgres = new Resources(invec) ;
+	//test.create_walker(5,0,0,1,1,pgres);
+	//test.create_walker(2,1,0,1,1,pgres);
+	//test.add_time_queue(0.45);
+	//test.move_walker(1,33);
+	//test.add_time_queue(0.35);
+	//test.move_walker(1,35);
+	//test.move_walker(0,12);
+	//test.add_time_queue(0.35);
+	//test.print_status();
 	cout << "CCC ENDS HERE "<<endl;
 	
 
-
+/*
    //TEST WALKER
 
   cout << "TEST FOR Wlk_Resources "<<endl;

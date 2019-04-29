@@ -83,7 +83,7 @@ class walker {
   
   void start(const float time, const int dest, const Wlk_Resources res);
   /* add here resources as output */
-  void stop (Wlk_Resources res);
+  void stop (Wlk_Resources * res);
   void check_parent_sons(const int id);
 
 };
@@ -116,6 +116,7 @@ public:
     void activate_process(const int id, const float t, const int dest,
                           const int queue_pos, const Wlk_Resources res);
 
+    //void  print_queue() const noexcept{std::cout<< queue << std::endl;};
 
     /* When a walker is deleted it updates all the walkers*/
     void erased_update(const int id);
@@ -124,7 +125,7 @@ public:
      * running_pos is the position in the vector of running
      * processes.
      */
-    void end_process(const int running_pos);
+    void end_process(const int running_pos, Wlk_Resources * res);
 
 
     void print_status();
