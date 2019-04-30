@@ -119,25 +119,27 @@ int main()
 
 	// int walker_to_stop;
 
+	//It will be done inside the group class that will become a sort of Scenario
+
 	while (true) {
 		// ####### STEP 1 #######
-		// Find next walker to finish its process
-		// walker_to_stop = <Walker_Group>.get_next_to_finish();
-		
-		// ####### STEP 2 #######
-		// End this walker
+		// End the first walker to finish or create the next one
+		// move it to its destination(more than one if we have a split) 
+		// and free the resources allocated. If the walker dies than we delete
+		// it and save its history. If the next destination is a logic gate
+		// the process goes at the top of the queue, if it is a process
 		// <Walker_Group>.end_process(walker_to_stop, &<Wlk_Resources>);
 
-		// ####### STEP 3 #######
-		// Now proceed with the same walker to the next Block
-		// First, we need to find the id of the next Block
-		// Afterwards we need to put the walker into queue, even if it could run!
+		// ####### STEP 2 #######
+		// We analize the queue starting from the top until we don't have 
+		// more resources (the resources are allocated even if the process
+		// cannot start because it needs other resources), launching everything
+		// that we can (we will have a block.can_it_start function.
 
-		// ####### STEP 4 #######
-		// For <walker> in <queue> //alternatively: while (not_all_resources_occupied) 
-		//		Check if walker can run
-		// 		<Walker_Group>.activate_process(inner_loop_index,....);
-	}
+		// ####### STEP 3 #######
+		// Find out if the next action is to create a walker or to finish a process 
+		// walker_to_stop = <Walker_Group>.get_next_to_finish();
+		}
 
 */
 
