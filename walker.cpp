@@ -1,16 +1,14 @@
 #include <iostream>
 #include "walker.h"
 
-//Esattamente perche' abbiamo ridefinito questo operatore per un generico vettore?
 template <class T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec){
-
   for(auto i : vec){
     os<<i<<"  ";
-    
   }
   return os;
 }
+
 
 /* Default constructor for a walker, it must be initialized before the
  * walker is simulated.
@@ -171,12 +169,14 @@ void Group::end_process(const int running_pos, Wlk_Resources * res){
     erased_update(id);
     nwalker--;
   }
+  else   queue.push_back(id);
 }
 
 
 void Group::print_status(){
   for (auto i=0;i<(int)walker_list.size();i++)
     std::cout<< i <<" "<<walker_list[i]<<" "<< status[i]<<std::endl;
+  std::cout<< "Queue vector "<< queue<< std::endl;
 }
 
 

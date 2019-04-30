@@ -123,14 +123,9 @@ int main()
 	bla.activate_process(1, 2.2, 1, 1, pippo);
 	bla.add_time_queue(1.2);
 	bla.end_process(0, &pippo);
+	bla.activate_process(1, 0.2, -1, 1, pippo);
+	bla.end_process(0, &pippo);
 	bla.print_status();
-	//Peche' non riesco ad iniziare un nuovo processo???
-	//	bla.activate_process(1, 0.2, -1, 1, pippo);
-	//	bla.end_process(0, &pippo);
-	//	cout << "Pippo "<< pippo << endl;
-	//cout << "Paperino " << paperino <<endl;
-
-
 	//    std::vector<int> invec(3,0);
 	//for(unsigned int i=0 ; i<invec.size() ; i++ ){
 	//invec[i]=3*i+1;
