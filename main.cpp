@@ -12,7 +12,8 @@ int main()
     #ifdef DEBUG
         cout << "    DEBUG: entering main routine." << endl;
     #endif
-	/*
+
+/*
     vector<int> idsOut(3);
     vector<float> probsOut(3);
 //    Block helloworldBlock(0, idsOut, probsOut);
@@ -111,6 +112,36 @@ int main()
 	cout << "Next we go to Block " << blocksVector[2]->get_next_id() << endl;
 
 */
+
+
+/*
+	//Proposal for the main program
+
+	// int walker_to_stop;
+
+	while (true) {
+		// ####### STEP 1 #######
+		// Find next walker to finish its process
+		// walker_to_stop = <Walker_Group>.get_next_to_finish();
+		
+		// ####### STEP 2 #######
+		// End this walker
+		// <Walker_Group>.end_process(walker_to_stop, &<Wlk_Resources>);
+
+		// ####### STEP 3 #######
+		// Now proceed with the same walker to the next Block
+		// First, we need to find the id of the next Block
+		// Afterwards we need to put the walker into queue, even if it could run!
+
+		// ####### STEP 4 #######
+		// For <walker> in <queue> //alternatively: while (not_all_resources_occupied) 
+		//		Check if walker can run
+		// 		<Walker_Group>.activate_process(inner_loop_index,....);
+	}
+
+*/
+
+
  	
 	cout << "CCC START HERE "<<endl;
 
