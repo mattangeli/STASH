@@ -13,12 +13,14 @@ int main()
         cout << "    DEBUG: entering main routine." << endl;
     #endif
 
-/*
+
     vector<int> idsOut(3);
     vector<float> probsOut(3);
 //    Block helloworldBlock(0, idsOut, probsOut);
 
 	idsOut[0]= 656;
+	idsOut[1]= 2;
+	idsOut[2]= 7;
 
 	vector<int> res_tot(3);
 	vector<int> res_need1(3);
@@ -53,7 +55,7 @@ int main()
 
 
 
-
+/*
     vector<Block*> blocksVector(3);
     blocksVector[0] = new taskBlock(0, idsOut, probsOut,res_need1);
     blocksVector[1] = new xorBlock(1, idsOut, probsOut);
@@ -110,8 +112,38 @@ int main()
 
 	//Test returning next id
 	cout << "Next we go to Block " << blocksVector[2]->get_next_id() << endl;
-
 */
+
+
+	cout << endl << endl << "#####  Starting test 0x0a8 ######" << endl;
+
+	Group testgroup;
+
+	testgroup.create_walker(0,-1,0,3);
+	testgroup.create_walker(0,1,1,3);
+
+	//testgroup.add_res(1,res_need1,&res_type);
+	vector<int> dest;
+	float time;
+	Block1.get_block_info(testgroup, 0, dest , time, res_type );
+
+	auto hihi = testgroup.get_alloc_res(0);
+	cout << hihi[0] << hihi[1] << hihi[2] << endl;
+
+	hihi = res_type.avail();
+	cout << hihi[0] << hihi[1] << hihi[2] << endl;
+
+	Block1.get_block_info(testgroup, 1, dest , time, res_type );
+	//cout << dest[0] << "   " << dest[1] << "    " << dest[2] << "    "<< endl;
+	//cout << time << endl;
+
+
+	hihi = testgroup.get_alloc_res(1);
+	cout << hihi[0] << hihi[1] << hihi[2] << endl;
+	hihi = res_type.avail();
+	cout << hihi[0] << hihi[1] << hihi[2] << endl;	
+
+	cout << "#############  Done  ############" << endl;
 
 
 /*

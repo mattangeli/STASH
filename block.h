@@ -2,7 +2,9 @@
 #define BLOCK_H
 
 #include <vector>
+#include <cassert>
 #include "resources.h"
+#include "walker.h"
 
 using namespace std;
 
@@ -53,6 +55,12 @@ public:
 	//Standard is 0 (time needed for gates)
 	virtual float processing_time() {
 		return 0.0;
+	}
+
+
+
+	virtual int get_block_info(Wlk_Resources&, vector<int>& destinations , float & time ) {
+		cout << "get_block_info function not specialized. Define it for your block" << endl;	
 	}
 
 	/*
@@ -157,6 +165,19 @@ public:
 		//Here we should get a random number according to some distribution
 		return id*3.14159265359;
 	}
+
+
+	int get_block_info(Group & the_group, const int id, vector<int>& destinations , float & time, Resources & global_res ) {
+
+		the_group.add_res(id,res_needed,&global_res);
+		destinations = idsOut;
+		time = id*3.14159265359; //Here we need to adjust
+
+		return 0; // Return 
+
+
+	}
+
 
 };
 

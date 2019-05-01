@@ -69,6 +69,7 @@ class walker {
   
   /* This constructor creates and initialize a walker */
   walker(const int pos, const int par_id, const int ch_id);
+  walker(const int pos, const int par_id, const int ch_id, const int ntyp_res);
   
   int get_parent_id() const noexcept; //{return parent_id;}
   int get_child_id() const noexcept; //{return child_id;}
@@ -85,6 +86,9 @@ class walker {
   /* add here resources as output */
   void stop (Wlk_Resources * res);
   void check_parent_sons(const int id);
+  void add_res(vector<int> const& needed , Resources * global_res);
+
+  vector<int> get_alloc_res();
 
 };
 
@@ -109,12 +113,17 @@ public:
     void create_walker(const int pos, const int par_id,
                        const int ch_id);
 
+    void create_walker(const int pos, const int par_id,
+                       const int ch_id, const int ntype_res);
+
     void add_time_queue(const float time);
 
     void move_walker(const int id, const int pos);
 
     void activate_process(const int id, const float t, const int dest,
                           const int queue_pos, const Wlk_Resources res);
+
+	vector<int> get_alloc_res(const int id);
 
     //void  print_queue() const noexcept{std::cout<< queue << std::endl;};
 
@@ -126,6 +135,8 @@ public:
      * processes.
      */
     void end_process(const int running_pos, Wlk_Resources * res);
+
+	void add_res(const int id,vector<int> const& needed , Resources * global_res);
 
 
     void print_status();

@@ -33,6 +33,14 @@ walker::walker(const int pos, const int par_id,
 	alloc_res{Wlk_Resources()}
     {}
 
+walker:: walker(const int pos, const int par_id, const int ch_id, const int ntype_res):
+	parent_id{par_id},
+    child_id{ch_id},
+    position{pos},
+    hist{history(pos)},
+	alloc_res{Wlk_Resources(ntype_res)}
+    {}
+
 int walker::get_parent_id() const noexcept {return parent_id;}
 int walker::get_child_id() const noexcept {return child_id;}
 int walker::get_pos() const noexcept {return position;}
@@ -64,6 +72,16 @@ void walker::stop (Wlk_Resources * res){
   *res=alloc_res;
   if (destination!=-1) moveto(destination);
   alloc_res=Wlk_Resources();
+}
+
+/* Allocate resources to a walker */
+void walker::add_res(vector<int> const& needed , Resources * global_res){
+       alloc_res.add_res(needed, global_res);
+    }
+
+
+vector<int> walker::get_alloc_res() {
+	return alloc_res.get_resources();
 }
 
 
@@ -106,6 +124,21 @@ void Group::create_walker(const int pos, const int par_id,
     walker_list.push_back(walker(pos,par_id, ch_id));
   else
     walker_list.push_back(walker(pos,totwalker, ch_id));
+  status.push_back(0);
+  nwalker++;
+  totwalker++;
+  //maybe if "pos" is a logic gate we can put it at the top of the cue ;)
+  queue.push_back(nwalker-1);
+}
+
+
+void Group::create_walker(const int pos, const int par_id,
+			  const int ch_id, const int ntype_res){
+
+  if (par_id>=0)
+    walker_list.push_back(walker(pos,par_id, ch_id,ntype_res));
+  else
+    walker_list.push_back(walker(pos,totwalker, ch_id, ntype_res));
   status.push_back(0);
   nwalker++;
   totwalker++;
@@ -188,6 +221,16 @@ void Group::erased_update(const int id){
   /*  for (auto  i=walker_list.begin()+id;i!=running.end();i++)
     *i.check_parent_sons(id);
     */
+}
+
+
+void Group::add_res(const int id,vector<int> const& needed , Resources * global_res) {
+	walker_list[id].add_res(needed,global_res);
+}
+
+
+vector<int> Group::get_alloc_res(const int id) {
+	return walker_list[id].get_alloc_res();
 }
 
 

@@ -44,7 +44,7 @@ public:
      */
     void res_allocate(vector<int> const& needed, vector<int>& occup) {
         /* Dimension checks */
-        assert(needed.size() == occup.size() || needed.size() == available.size());
+        assert(needed.size() == occup.size() && needed.size() == available.size());
         //if (needed.size() != occup.size() ||
         //        needed.size() != available.size() ) {
 
