@@ -10,6 +10,7 @@ set(SOURCES
     block.cpp
     walker.cpp
     history.cpp
+    wlk_resources.cpp
 )
 
 # Header files
@@ -18,6 +19,7 @@ include_directories(${PROJECT_SOURCE_DIR})
 #    block.h
 #    walker.h
 #    history.h
+#    wlk_resources.h
 #)
 #
 #include_directory(.)

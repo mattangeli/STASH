@@ -4,6 +4,7 @@
 #include "block.h"
 #include "walker.h"
 #include "resources.h"
+//#include "wlk_resources.h"
 
 using namespace std;
 
@@ -174,8 +175,17 @@ int main()
 		}
 
 */
+	int next{1}, new_pos{0};
+	//next identifies the next action (0 stop, 1 terminate process, 2 create walker in position
+	// new_pos
+	while (next!=0){
+	  if (next==1) test.group(res_type);
+	  if (next==2) test.create_walker(new_pos, group.get_nwalker(), group.get_nwalker(), res_type);
+	  //we need to go through the queue 
+	  next=test.next_operation(&new_pos);
+	}
 
-
+*/
  	
 	cout << "CCC START HERE "<<endl;
 
@@ -185,10 +195,10 @@ int main()
 	bla.create_walker(0,-1,0);
 	bla.create_walker(0,1,1);
 	bla.add_time_queue(1.5);
-	bla.activate_process(1, 2.2, 1, 1, pippo);
+	bla.activate_process(1, 2.2, vector<int>(1,1), 1, pippo);
 	bla.add_time_queue(1.2);
 	bla.end_process(0, &pippo);
-	bla.activate_process(1, 0.2, -1, 1, pippo);
+	bla.activate_process(1, 0.2, vector<int>(1,-11), 1, pippo);
 	bla.end_process(0, &pippo);
 	bla.print_status();
 	//    std::vector<int> invec(3,0);

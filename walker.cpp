@@ -6,60 +6,70 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec){
   for(auto i : vec){
     os<<i<<"  ";
   }
-  return os;
-}
+  return os;}
+
 
 
 /* Default constructor for a walker, it must be initialized before the
  * walker is simulated.
  */
+
 walker::walker():
-  parent_id{0},
-	child_id{0},
+	my_id{0},
+	parent_id{0},
 	position{-1},
-	destination{-1},
+	destination{std::vector<int>(1,-1)},
+	children_id{std::vector<int>(1,my_id)},
 	hist{history()},
 	alloc_res{Wlk_Resources()}
 {}
 
-
     /* This constructor creates and initialize a walker */
-walker::walker(const int pos, const int par_id,
-	       const int ch_id):
-  parent_id{par_id},
-        child_id{ch_id},
-        position{pos},
-        hist{history(pos)},
-	alloc_res{Wlk_Resources()}
-    {}
 
-walker:: walker(const int pos, const int par_id, const int ch_id, const int ntype_res):
+
+walker::walker(const int pos, const int par_id,
+	       const int _my_id, const float time):
+        my_id{_my_id},
 	parent_id{par_id},
-    child_id{ch_id},
-    position{pos},
-    hist{history(pos)},
+        position{pos},
+	destination{std::vector<int>(1,-1)},
+	children_id{std::vector<int>()},
+        hist{history(pos, time)},
+	alloc_res{Wlk_Resources()}
+{if (my_id==parent_id) children_id=std::vector<int>(1,my_id);}
+
+walker:: walker(const int pos, const int par_id, const int _my_id, const int time,  const int ntype_res):
+  my_id{_my_id},      
+	parent_id{par_id},
+	position{pos},
+	destination{std::vector<int>(1,-1)},
+	children_id{std::vector<int>()},
+	hist{history(pos, time)},
 	alloc_res{Wlk_Resources(ntype_res)}
-    {}
+{if (my_id==parent_id) children_id=std::vector<int>(1,my_id);}
+
+
+
 
 int walker::get_parent_id() const noexcept {return parent_id;}
-int walker::get_child_id() const noexcept {return child_id;}
 int walker::get_pos() const noexcept {return position;}
-int walker::get_destination() const noexcept {return destination;}
-    const history  walker::get_history() const noexcept {return hist;}
+std::vector<int> walker::get_child_id() const noexcept {return children_id;}
+std::vector<int> walker::get_destination() const noexcept {return destination;}
+const history  walker::get_history() const noexcept {return hist;}
 
 
-    void walker::addtq (const float time){hist.addtimeque(time);}
-    /* Moves the walker in the next position */
-    void walker::moveto(const int pos){
-        assert(pos >= 0);// if pos negative ??
-        position=pos;
-        hist.next_step(pos);
-    }
+void walker::addtq (const float time){hist.addtimeque(time);}
+/* Moves the walker in the next position */
+void walker::moveto(const int pos){
+  assert(pos >= 0);// if pos negative ??
+  position=pos;
+  hist.next_step(pos);
+}
 
 
 /*We have to think to something in the case after this process we have to create
  a son walker */
-void walker::start(const float time, const int dest, const Wlk_Resources res){
+void walker::start(const float time, const std::vector<int> dest, const Wlk_Resources res){
         /* Maybe we could say that destination -1 is the end? */
         destination=dest;
         hist.addtimeexe(time);
@@ -70,8 +80,10 @@ void walker::start(const float time, const int dest, const Wlk_Resources res){
 void walker::stop (Wlk_Resources * res){
   //do we need to enforce a deep copy?
   *res=alloc_res;
-  if (destination!=-1) moveto(destination);
-  alloc_res=Wlk_Resources();
+  if ((int)destination.size()==1){
+    if (destination[0]!=-1) moveto(destination[0]);
+  }
+    alloc_res=Wlk_Resources();
 }
 
 /* Allocate resources to a walker */
@@ -84,6 +96,21 @@ vector<int> walker::get_alloc_res() {
 	return alloc_res.get_resources();
 }
 
+
+void walker::removed(const int id){
+  if (my_id!=parent_id){
+    if (my_id>id) my_id--;
+    if (parent_id>id) parent_id--;
+  }
+  else{
+    if (my_id>id) my_id--;
+    if (parent_id>id) parent_id--;
+    for (auto i=children_id.begin(); i!=children_id.end(); i++)
+      if (*i>id) *i--;
+  }
+}
+
+void walker::add_son(const int id){children_id.push_back(id);}
 
 /* Overload the << operator for the walker */
 std::ostream& operator<<(std::ostream& os, const walker& w) {
@@ -102,8 +129,9 @@ Group::Group() :
   nwalker{0},
   next_to_finish{-1},
   totwalker{0},
-  walker_list{std::vector<walker>()}    ,
         //    walker_list{std::vector<walker>(init_length)},/
+  tot_time{0.0},
+  walker_list{std::vector<walker>()}    ,
   queue{std::vector<int>()}    ,
   status{std::vector<int> ()}    ,
   running{std::vector<int>()} ,
@@ -118,12 +146,9 @@ void Group::evolve(){
 
 
 void Group::create_walker(const int pos, const int par_id,
-			  const int ch_id){
-
-  if (par_id>=0)
-    walker_list.push_back(walker(pos,par_id, ch_id));
-  else
-    walker_list.push_back(walker(pos,totwalker, ch_id));
+			  const int my_id){
+  walker_list.push_back(walker(pos,par_id, my_id));
+  if (par_id==my_id) walker_list[par_id].add_son(my_id);
   status.push_back(0);
   nwalker++;
   totwalker++;
@@ -133,12 +158,9 @@ void Group::create_walker(const int pos, const int par_id,
 
 
 void Group::create_walker(const int pos, const int par_id,
-			  const int ch_id, const int ntype_res){
-
-  if (par_id>=0)
-    walker_list.push_back(walker(pos,par_id, ch_id,ntype_res));
-  else
-    walker_list.push_back(walker(pos,totwalker, ch_id, ntype_res));
+			  const int my_id, const int ntype_res){
+  walker_list.push_back(walker(pos,par_id, my_id, ntype_res));
+  if (par_id==my_id) walker_list[par_id].add_son(my_id);
   status.push_back(0);
   nwalker++;
   totwalker++;
@@ -156,26 +178,13 @@ void Group::add_time_queue(const float time){
    */
   for (auto  i=exec_time.begin();i!=exec_time.end();i++)
     *i-=time;
+
+  tot_time+=time;
 }
 
-/*
-void Group::move_walker(const int id){
-  if (pos!=-1){
-    walker_list[id].moveto(pos);
-    //maybe if "pos" is a logic gate we can put it at the top of the cue ;)
-    queue.push_back(id);
-    status[id]=0;
-  } 
-  else {
-    //write history
-    walker_list.erase(walker_list.begin()+id)
-    status.erase(status.begin()+id);
-    group.erased_update(id);
-    
-  }
-  }*/
 
-void Group::activate_process(const int id, const float t, const int dest,
+
+void Group::activate_process(const int id, const float t, const std::vector<int> dest,
 			     const int queue_pos, const Wlk_Resources res){
   status[id]=1;
   queue.erase(queue.begin()+queue_pos);
@@ -195,7 +204,7 @@ void Group::end_process(const int running_pos, Wlk_Resources * res){
   running.erase(running.begin()+running_pos);
   exec_time.erase(exec_time.begin()+running_pos);
   status[id]=0;
-  if (walker_list[id].get_destination()==-1){
+  if (walker_list[id].get_destination()[0]==-1){
     //print history
     walker_list.erase(walker_list.begin()+id);
     status.erase(status.begin()+id);                                                                                                                 
@@ -218,6 +227,8 @@ void Group::erased_update(const int id){
     if (*i>id) *i--;
   for (auto  i=queue.begin();i!=queue.end();i++)
     if (*i>id) *i--;
+  for (auto i=walker_list.begin();i!=walker_list.end();i++)
+    i->removed(id);
   /*  for (auto  i=walker_list.begin()+id;i!=running.end();i++)
     *i.check_parent_sons(id);
     */
@@ -234,24 +245,36 @@ vector<int> Group::get_alloc_res(const int id) {
 }
 
 
+void Group::check_stop_evolve(const int ntype_res){
+  float eps{0.000001};
+  Wlk_Resources res(ntype_res);
+  for (auto  i=0;i!=(int)running.size();i++){
+    if (exec_time[i]<eps) {
+      end_process(i, &res);
+    }
+  }
+}
 
 
-     // default constructor
-     Wlk_Resources::Wlk_Resources():
-      ntype_res{0},
-      num_tot_res{0},
-      num_res_alloc{0},
-      resources{std::vector<int>(ntype_res,0)}
-      {}
-     // constuctor with len and res
-     Wlk_Resources::Wlk_Resources(int _ntype_res, int _num_tot_res ):
-      ntype_res{_ntype_res},
-      num_tot_res{_num_tot_res},
-      num_res_alloc{0},
-      resources{std::vector<int>(_ntype_res,0)}
-      {}
-     // function to add resources the typeof res is an int?
-     Wlk_Resources::Wlk_Resources(Resources * global_res, int _num_tot_res):
+
+
+
+// default constructor
+Wlk_Resources::Wlk_Resources():
+  ntype_res{0},
+  num_tot_res{0},
+  num_res_alloc{0},
+  resources{std::vector<int>(ntype_res,0)}
+{}
+// constuctor with len and res
+Wlk_Resources::Wlk_Resources(int _ntype_res, int _num_tot_res ):
+  ntype_res{_ntype_res},
+  num_tot_res{_num_tot_res},
+  num_res_alloc{0},
+  resources{std::vector<int>(_ntype_res,0)}
+  {}
+// function to add resources the typeof res is an int?
+Wlk_Resources::Wlk_Resources(Resources * global_res, int _num_tot_res):
       ntype_res{(int)global_res->get_ntype()},
       num_tot_res{_num_tot_res},
       num_res_alloc{0},
@@ -262,33 +285,33 @@ vector<int> Group::get_alloc_res(const int id) {
 #endif
           }
 
-    void Wlk_Resources::add_res(int tres, int nres, Resources * global_res ){ // tres type resources to alloc nres how much of it
-       assert( tres < ntype_res);
-       vector<int> needed(ntype_res,0);
-       needed[tres]=nres;
-       global_res->res_allocate(needed,resources);
-    }
+void Wlk_Resources::add_res(int tres, int nres, Resources * global_res ){ // tres type resources to alloc nres how much of it
+  assert( tres < ntype_res);
+  vector<int> needed(ntype_res,0);
+  needed[tres]=nres;
+  global_res->res_allocate(needed,resources);
+}
 
 //release resources not really needed just call the function in the REs Container
-    void Wlk_Resources::release_res(Resources * global_res){
-        global_res-> res_release(resources);
+void Wlk_Resources::release_res(Resources * global_res){
+  global_res-> res_release(resources);
+  
+}
+void Wlk_Resources::add_res(vector<int> const& needed , Resources * global_res){
+  assert( needed.size() == global_res->get_ntype() );
+  assert( needed.size() == resources.size() );
+  
+  global_res->res_allocate(needed,resources);
+  
+}
+std::vector<int>  Wlk_Resources::get_resources() const {
+  return resources;
+}
 
-    }
-    void Wlk_Resources::add_res(vector<int> const& needed , Resources * global_res){
-       assert( needed.size() == global_res->get_ntype() );
-       assert( needed.size() == resources.size() );
-
-       global_res->res_allocate(needed,resources);
-
-    }
-    std::vector<int>  Wlk_Resources::get_resources() const {
-       return resources;
-    }
-
-    std::vector<int> Wlk_Resources::get_variables() const { // return all  the other protected variables in a vector [ntype_res, num_tot_res, num_res_alloc]
-       std::vector<int> var{ntype_res, num_tot_res, num_res_alloc};
-       return var;
-    }
+std::vector<int> Wlk_Resources::get_variables() const { // return all  the other protected variables in a vector [ntype_res, num_tot_res, num_res_alloc]
+  std::vector<int> var{ntype_res, num_tot_res, num_res_alloc};
+  return var;
+}
 
 
 

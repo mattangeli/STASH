@@ -35,12 +35,15 @@ public:
     {}
 
     /* Constructor for history of positions and times */
-    history(const int pos):
+ history(const int pos, const float time):
         length{1},
-        _skip{2},
-        record{std::vector<float>(2,0.)},
+        _skip{3},
+        record{std::vector<float>(3,0.)},
         positions{std::vector<int>(1,0)}
-    {positions[0]=pos;}
+	{
+	  positions[0]=pos;
+	  record[0]=time;
+    }
 
     /* These functions add the time spent in the queue and ??? */
     void addtimeque(const float T){record[_skip*(length-1)]+=T;}
@@ -53,6 +56,8 @@ public:
     /* This function update the position in the history of the walker */
     void next_step(const int npos){
         length++;
+	auto new_time=record[(lenght-1)*skip]+record[(lenght-1)*skip+1]+record[(lenght-1)*skip+2];
+	record.push_back(new_time);
         record.push_back(0.);
         record.push_back(0.);
         positions.push_back(npos);

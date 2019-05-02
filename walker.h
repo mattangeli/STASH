@@ -7,6 +7,8 @@
 #include "history.h"
 #include <cassert>
 #include "resources.h"
+#include "wlk_resources.h"
+
 
 
 class Wlk_Resources{
@@ -41,6 +43,12 @@ class Wlk_Resources{
 std::ostream& operator<<(std::ostream& os, const Wlk_Resources& res);
 
 
+template <class T>
+std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec);
+
+
+
+
 
 /*--------------------
      Walker Class
@@ -51,13 +59,11 @@ std::ostream& operator<<(std::ostream& os, const Wlk_Resources& res);
   and resources allocated.
 ---------------------------------------------------------------------------*/
 
-template <class T>
-std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec);
-
 
 class walker {
   /* Maybe we could say that destination -1 is the end? */
-  int parent_id, child_id, position, destination;
+  int my_id, parent_id, position;
+  std::vector<int> destination, children_id;
   history hist;
   Wlk_Resources alloc_res;
  public:
@@ -68,25 +74,30 @@ class walker {
   
   
   /* This constructor creates and initialize a walker */
-  walker(const int pos, const int par_id, const int ch_id);
-  walker(const int pos, const int par_id, const int ch_id, const int ntyp_res);
-  
+  walker(const int pos, const int par_id, const int _my_id, const float time);
+  walker(const int pos, const int par_id, const int _my_id, const float time, const int ntyp_res);
+
+
+  std::vector<int> get_child_id() const noexcept;
   int get_parent_id() const noexcept; //{return parent_id;}
-  int get_child_id() const noexcept; //{return child_id;}
+  int get_my_id() const noexcept; //{return child_id;}
   int get_pos() const noexcept ;//{return position;}
-  int get_destination() const noexcept;
+  std::vector<int> get_destination() const noexcept;
   const history  get_history() const noexcept ;//{return hist;}
-  
-  
+    
+
   void addtq (const float time);//{hist.addtimeque(time);}
   /* Moves the walker in the next position */
   void moveto(const int pos);
   
-  void start(const float time, const int dest, const Wlk_Resources res);
+  void start(const float time, const std::vector<int> dest, const Wlk_Resources res);
   /* add here resources as output */
   void stop (Wlk_Resources * res);
-  void check_parent_sons(const int id);
+  //?  void check_parent_sons(const int id);
   void add_res(vector<int> const& needed , Resources * global_res);
+  
+  void removed(const int id);
+  void add_son(const int id);
 
   vector<int> get_alloc_res();
 
@@ -108,22 +119,23 @@ class Group {
 public:
     Group();
 
-    void evolve();
+    void check_stop_evolve();
 
     void create_walker(const int pos, const int par_id,
-                       const int ch_id);
+                       const int my_id);
 
     void create_walker(const int pos, const int par_id,
-                       const int ch_id, const int ntype_res);
+                       const int my_id, const int ntype_res);
 
     void add_time_queue(const float time);
 
     void move_walker(const int id, const int pos);
 
-    void activate_process(const int id, const float t, const int dest,
+    void activate_process(const int id, const float t, const std::vector<int> dest,
                           const int queue_pos, const Wlk_Resources res);
 
-	vector<int> get_alloc_res(const int id);
+    int get_nwalker(){return nwalker};
+    vector<int> get_alloc_res(const int id);
 
     //void  print_queue() const noexcept{std::cout<< queue << std::endl;};
 
@@ -136,7 +148,7 @@ public:
      */
     void end_process(const int running_pos, Wlk_Resources * res);
 
-	void add_res(const int id,vector<int> const& needed , Resources * global_res);
+    void add_res(const int id,vector<int> const& needed , Resources * global_res);
 
 
     void print_status();
