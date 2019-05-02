@@ -40,7 +40,12 @@ int main()
 
 	Resources res_type(res_tot);
 
-    taskBlock Block1(1, idsOut, probsOut,res_need1);
+	Wlk_Resources wlkrestest(3);
+	wlkrestest.set(0,1);
+	wlkrestest.set(1,2);
+	wlkrestest.set(2,3);
+
+    taskBlock Block1(1, idsOut, probsOut, wlkrestest);
     xorBlock Block2(2, idsOut, probsOut);
 
 //    Block1.ABBA();

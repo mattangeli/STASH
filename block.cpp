@@ -28,10 +28,10 @@ Block::Block(int id, vector<int> idsOut, vector<float> probsOut) {
     }
 }
 
-taskBlock::taskBlock(int id, vector<int> idsOut, vector<float> probsOut, vector<int> res_needed_) :
+taskBlock::taskBlock(int id, vector<int> idsOut, vector<float> probsOut, Wlk_Resources & res_needed_) :
     Block(id, idsOut, probsOut),
     res_needed{res_needed_},
-    res_occup(res_needed_.size(),0) {
+    res_occup{Wlk_Resources(res_needed_.ntypes())} {
     #ifdef DEBUG
         cout << "    DEBUG: block is of type taskBlock." << endl;
     #endif

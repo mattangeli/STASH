@@ -4,6 +4,7 @@
 #include <vector>
 #include <cassert>
 #include "resources.h"
+#include "Wlk_Resources.h"
 #include "walker.h"
 
 using namespace std;
@@ -101,10 +102,10 @@ public:
 /* Generic task block */
 class taskBlock : public Block {
 private:
-    vector<int> res_needed;
-    vector<int> res_occup;
+    Wlk_Resources res_needed;
+    Wlk_Resources res_occup;
 public:
-    taskBlock(int, vector<int>, vector<float>, vector<int>);
+    taskBlock(int, vector<int>, vector<float>, Wlk_Resources &);
     void ABBA() {
         cout << "I'm a taskBlock and I suck!" << endl;
     }
@@ -141,13 +142,15 @@ public:
 
 */
 
-    /* Allocate resources */
+/*
+
+    // Allocate resources 
     void resources_allocate(Resources& resource_) {
         cout << "Allocating resources for Block " << id << endl;
         resource_.res_allocate(res_needed, res_occup);
     }
 
-    /* After finishing the process we want to release the resources. */
+    // After finishing the process we want to release the resources.
     void resources_release(Resources& resource_) {
         cout << "Releasing the resources of Block " << id << endl;
         resource_.res_release(res_occup);
@@ -159,6 +162,8 @@ public:
         }
         return res_needed;
     }
+
+*/
 
 	//Return the time needed to complete this task
 	float processing_time() {

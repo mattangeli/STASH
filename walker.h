@@ -7,38 +7,8 @@
 #include "history.h"
 #include <cassert>
 #include "resources.h"
+#include "Wlk_Resources.h"
 
-
-class Wlk_Resources{
-   int ntype_res, num_tot_res, num_res_alloc ;
-   std::vector<int> resources; 
-
-   public:
-     // default constructor
-     Wlk_Resources();
-     // constuctor with len and res
-     Wlk_Resources(int _ntype_res, int _num_tot_res = 0);
-     // function to add resources the typeof res is an int?
-     Wlk_Resources(Resources * global_res, int _num_tot_res = 0);
-
-    void add_res(int tres, int nres, Resources * global_res );
-//release resources not really needed just call the function in the REs Container
-    void release_res(Resources * global_res);
-
-    void add_res(vector<int> const& needed , Resources * global_res);
-
-    std::vector<int>  get_resources() const;// {
-      // return resources;
-    //}
-
-    std::vector<int> get_variables() const;// { // return all  the other protected variables in a vector [ntype_res, num_tot_res, num_res_alloc]
-     //  std::vector<int> var{ntype_res, num_tot_res, num_res_alloc};
-     //  return var;
-    //}
-
-};
-
-std::ostream& operator<<(std::ostream& os, const Wlk_Resources& res);
 
 
 
@@ -86,7 +56,7 @@ class walker {
   /* add here resources as output */
   void stop (Wlk_Resources * res);
   void check_parent_sons(const int id);
-  void add_res(vector<int> const& needed , Resources * global_res);
+  void add_res(Wlk_Resources const& needed , Resources * global_res);
 
   vector<int> get_alloc_res();
 
@@ -136,7 +106,7 @@ public:
      */
     void end_process(const int running_pos, Wlk_Resources * res);
 
-	void add_res(const int id,vector<int> const& needed , Resources * global_res);
+	void add_res(const int id,Wlk_Resources const& needed , Resources * global_res);
 
 
     void print_status();
