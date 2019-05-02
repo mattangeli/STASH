@@ -31,6 +31,8 @@ protected:
     vector<float> probsOut;
 public:
     Block(int, vector<int>, vector<float>);
+    //destructor
+    virtual ~Block ();
     virtual void ABBA() {
         cout << "I'm a Block and you are a Block." << endl;
     }
@@ -62,7 +64,8 @@ public:
 
 
 	virtual int get_block_info(Wlk_Resources&, vector<int>& destinations , float & time ) {
-		cout << "get_block_info function not specialized. Define it for your block" << endl;	
+        cout << "get_block_info function not specialized. Define it for your block" << endl;
+        return 1; //add to make a warnong silent
 	}
 
 	/*

@@ -27,6 +27,8 @@ Block::Block(int id, vector<int> idsOut, vector<float> probsOut) {
         cout << "You are an idiot, the length of the input vectors in the Block class idsOut is not the same as probsOut!" << endl;
     }
 }
+//destructor
+Block::~Block () {};
 
 taskBlock::taskBlock(int id, vector<int> idsOut, vector<float> probsOut, Wlk_Resources & res_needed_) :
     Block(id, idsOut, probsOut),
