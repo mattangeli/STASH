@@ -10,7 +10,7 @@ set(SOURCES
     block.cpp
     walker.cpp
     history.cpp
-    wlk_resources.cpp
+    Wlk_Resources.cpp
 )
 
 # Header files

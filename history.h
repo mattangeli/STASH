@@ -17,7 +17,7 @@
 
 class history {
     /*--------------------------------------------------------------------------
-      length  in input describes the starting value for the history lenght,
+      length  in input describes the starting value for the history length,
               and after it is used to keep trace of the number of steps done
       skip    is the distance in record between one chronological record and
               the next (2 for the time, maybe one for the cost in the future..)
@@ -56,7 +56,7 @@ public:
     /* This function update the position in the history of the walker */
     void next_step(const int npos){
         length++;
-	auto new_time=record[(lenght-1)*skip]+record[(lenght-1)*skip+1]+record[(lenght-1)*skip+2];
+	auto new_time=record[(length-1)*_skip]+record[(length-1)*_skip+1]+record[(length-1)*_skip+2];
 	record.push_back(new_time);
         record.push_back(0.);
         record.push_back(0.);

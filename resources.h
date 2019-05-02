@@ -2,6 +2,7 @@
 #define RESOURCES_H
 
 #include <vector>
+#include "Wlk_Resources.h"
 
 using namespace std;
 
@@ -42,9 +43,9 @@ public:
      * writing it in the occup vector and removing them from the available
      * vector of the resource class (Horrible exlanation, code is easy)
      */
-    void res_allocate(vector<int> const& needed, vector<int>& occup) {
+    void res_allocate(Wlk_Resources const& needed, Wlk_Resources & occup) {
         /* Dimension checks */
-        assert(needed.size() == occup.size() && needed.size() == available.size());
+        assert(needed.ntypes() == occup.ntypes() && needed.ntypes() == available.size());
         //if (needed.size() != occup.size() ||
         //        needed.size() != available.size() ) {
 
@@ -55,13 +56,13 @@ public:
 
         /* Go through all the types of resources */
         for (int ii=0; ii < (int)available.size(); ii++){
-            if (available[ii] >= (needed[ii] - occup[ii] )) {
-                available[ii] -= (needed[ii] - occup[ii] );
-                cout << ii << ": " << (needed[ii] - occup[ii] )  << endl;
-                occup[ii] = needed[ii];
+            if (available[ii] >= (needed.get_resources(ii) - occup.get_resources(ii) )) {
+                available[ii] -= (needed.get_resources(ii) - occup.get_resources(ii) );
+                cout << ii << ": " << (needed.get_resources(ii) - occup.get_resources(ii) )  << endl;
+                occup.set(ii,needed.get_resources(ii));
             }
             else {
-                occup[ii] +=available[ii];
+				occup.set(ii,occup.get_resources(ii) + available[ii] );
                 cout << ii << ": "<< available[ii] << endl;
                 available[ii] = 0;
             }

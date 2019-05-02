@@ -38,7 +38,8 @@ walker::walker(const int pos, const int par_id,
 	alloc_res{Wlk_Resources()}
 {if (my_id==parent_id) children_id=std::vector<int>(1,my_id);}
 
-walker:: walker(const int pos, const int par_id, const int _my_id, const int time,  const int ntype_res):
+walker:: walker(const int pos, const int par_id, const int _my_id, 
+		const float time,  const int ntype_res):
   my_id{_my_id},      
 	parent_id{par_id},
 	position{pos},
@@ -87,8 +88,8 @@ void walker::stop (Wlk_Resources * res){
 }
 
 /* Allocate resources to a walker */
-void walker::add_res(vector<int> const& needed , Resources * global_res){
-       alloc_res.add_res(needed, global_res);
+void walker::add_res(Wlk_Resources const& needed , Resources * global_res){
+       global_res->res_allocate(needed, alloc_res);
     }
 
 
@@ -139,15 +140,15 @@ Group::Group() :
 {}
 
 
-void Group::evolve(){
-}
+//void Group::evolve(){
+//}
 
 
 
 
 void Group::create_walker(const int pos, const int par_id,
 			  const int my_id){
-  walker_list.push_back(walker(pos,par_id, my_id));
+  walker_list.push_back(walker(pos,par_id, tot_time, my_id));
   if (par_id==my_id) walker_list[par_id].add_son(my_id);
   status.push_back(0);
   nwalker++;
@@ -235,7 +236,7 @@ void Group::erased_update(const int id){
 }
 
 
-void Group::add_res(const int id,vector<int> const& needed , Resources * global_res) {
+void Group::add_res(const int id, Wlk_Resources const& needed , Resources * global_res) {
 	walker_list[id].add_res(needed,global_res);
 }
 
@@ -256,68 +257,4 @@ void Group::check_stop_evolve(const int ntype_res){
 }
 
 
-
-
-
-// default constructor
-Wlk_Resources::Wlk_Resources():
-  ntype_res{0},
-  num_tot_res{0},
-  num_res_alloc{0},
-  resources{std::vector<int>(ntype_res,0)}
-{}
-// constuctor with len and res
-Wlk_Resources::Wlk_Resources(int _ntype_res, int _num_tot_res ):
-  ntype_res{_ntype_res},
-  num_tot_res{_num_tot_res},
-  num_res_alloc{0},
-  resources{std::vector<int>(_ntype_res,0)}
-  {}
-// function to add resources the typeof res is an int?
-Wlk_Resources::Wlk_Resources(Resources * global_res, int _num_tot_res):
-      ntype_res{(int)global_res->get_ntype()},
-      num_tot_res{_num_tot_res},
-      num_res_alloc{0},
-      resources{std::vector<int>(ntype_res,0)}
-      {
-#ifdef DEBUG
-          std::cout<<"constr con il Resources *"<<std::endl;
-#endif
-          }
-
-void Wlk_Resources::add_res(int tres, int nres, Resources * global_res ){ // tres type resources to alloc nres how much of it
-  assert( tres < ntype_res);
-  vector<int> needed(ntype_res,0);
-  needed[tres]=nres;
-  global_res->res_allocate(needed,resources);
-}
-
-//release resources not really needed just call the function in the REs Container
-void Wlk_Resources::release_res(Resources * global_res){
-  global_res-> res_release(resources);
-  
-}
-void Wlk_Resources::add_res(vector<int> const& needed , Resources * global_res){
-  assert( needed.size() == global_res->get_ntype() );
-  assert( needed.size() == resources.size() );
-  
-  global_res->res_allocate(needed,resources);
-  
-}
-std::vector<int>  Wlk_Resources::get_resources() const {
-  return resources;
-}
-
-std::vector<int> Wlk_Resources::get_variables() const { // return all  the other protected variables in a vector [ntype_res, num_tot_res, num_res_alloc]
-  std::vector<int> var{ntype_res, num_tot_res, num_res_alloc};
-  return var;
-}
-
-
-
-std::ostream& operator<<(std::ostream& os, const Wlk_Resources& res) {
-  os << res.get_resources()<<endl;
-  os << res.get_variables()<<endl;
-  return os;
-};
 
