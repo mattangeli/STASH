@@ -75,20 +75,21 @@ void walker::start(const float time, const std::vector<int> dest){
         hist.addtimeexe(time);
 }
 
-    /* add here resources as output */
-void walker::stop (Wlk_Resources * res){
+void walker::stop(){
   //do we need to enforce a deep copy?
-  *res=alloc_res;
   if ((int)destination.size()==1){
     if (destination[0]!=-1) moveto(destination[0]);
   }
-  alloc_res.release();
 }
 
 /* Allocate resources to a walker */
 void walker::add_res(Wlk_Resources const& needed , Resources * global_res){
-       global_res->res_allocate(needed, alloc_res);
+    global_res->res_allocate(needed, alloc_res);
     }
+
+void walker::release_res(Resources & global_res) {
+	global_res.res_release(alloc_res);
+	}
 
 
 vector<int> walker::get_alloc_res() {
@@ -184,10 +185,10 @@ void Group::activate_process(const int id, const float t, const std::vector<int>
  * running_pos is the position in the vector of running
  * processes.
  */
-void Group::end_process(const int running_pos){
+void Group::end_process(const int running_pos, Resources & tot_res){
   int id{running[running_pos]};
-  Wlk_Resources res;
-  walker_list[id].stop(&res);
+  walker_list[id].stop();
+  walker_list[id].release_res(tot_res);
   //free the resources
   running.erase(running.begin()+running_pos);
   exec_time.erase(exec_time.begin()+running_pos);
@@ -235,10 +236,10 @@ vector<int> Group::get_alloc_res(const int id) {
 
 void Group::check_stop_evolve(Resources & tot_res){
   float eps{0.000001};
-  Wlk_Resources res(tot_res.get_ntype());
+  //Wlk_Resources res(tot_res.get_ntype());
   for (auto  i=0;i!=(int)running.size();i++){
     if (exec_time[i]<eps) {
-      end_process(i, &res);
+      end_process(i, tot_res);
       
     }
   }
@@ -263,7 +264,7 @@ void Group::check_queue(Resources global_res, vector<unique_ptr<Block>> & blocks
 int Group::get_block_info(Block blk, const int id, vector<int>& destinations , 
 		   float & time, Resources & global_res )
 {
-  add_res(id,blk.get_res_needed(),&global_res);
+  add_res(id,blk.get_res_needed( (int)global_res.get_ntype()), &global_res);
   destinations = blk.get_idsOut();
   time = id*3.14159265359; //Here we need to adjust
   return 0; // Return 

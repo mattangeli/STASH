@@ -60,7 +60,7 @@ class walker {
   
   void start(const float time, const std::vector<int> dest);
   /* add here resources as output */
-  void stop (Wlk_Resources * res);
+  void stop();
 
   
   void removed(const int id);
@@ -68,6 +68,7 @@ class walker {
 
   void check_parent_sons(const int id);
   void add_res(Wlk_Resources const& needed , Resources * global_res);
+  void release_res(Resources & global_res);
 
 
   vector<int> get_alloc_res();
@@ -114,7 +115,7 @@ public:
      * running_pos is the position in the vector of running
      * processes.
      */
-    void end_process(const int running_pos, Wlk_Resources * res);
+    void end_process(const int running_pos, Resources & tot_res);
 
     void add_res(const int id,Wlk_Resources const& needed , Resources * global_res);
 

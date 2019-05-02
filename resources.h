@@ -74,16 +74,13 @@ public:
 
 
     /* This function releases the resources in the input vector */
-    void res_release(vector<int>& occup) {
+    void res_release(Wlk_Resources & occup) {
         /* Dimension check */
-        assert(available.size() == occup.size());
-        //if (available.size() != occup.size()) {
-        //    cout << "Input vectors to function 'release' in Resource class have wrong length" << endl;
-        //}
+        assert(available.size() == occup.ntypes());
 
         for (int ii=0; ii < (int)available.size(); ii++){
-            available[ii] += occup[ii];
-            occup[ii] = 0;
+            available[ii] += occup.get_resources(ii);
+            occup.set(ii,0);
         }
 
     }

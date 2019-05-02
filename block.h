@@ -43,14 +43,15 @@ public:
         cout << "Me neither" << endl;
     }
 
-    virtual vector<int> get_needed_res(int length) {
-        vector<int> outvec(length,0);
-        return outvec;
+    virtual Wlk_Resources get_res_needed(int len) {
+        return Wlk_Resources(len);
     }
 
-    int get_next_id() {
-        return idsOut[0];
-    }
+	vector<int> get_idsOut() {
+		return idsOut;
+	}
+
+
 
 	//Return time needed for this Block
 	//Standard is 0 (time needed for gates)
@@ -156,14 +157,12 @@ public:
         resource_.res_release(res_occup);
     }
 
-    vector<int> get_needed_res(int length) {
-        if (length != (int)res_needed.size()) {
-            cout << "Integer provided to get_needed_res does not agree with resource vector length" << endl;
-        }
-        return res_needed;
-    }
 
 */
+
+    Wlk_Resources get_res_needed() {
+        return res_needed;
+    }
 
 	//Return the time needed to complete this task
 	float processing_time() {
