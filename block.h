@@ -5,7 +5,7 @@
 #include <cassert>
 #include "resources.h"
 #include "Wlk_Resources.h"
-#include "walker.h"
+
 
 using namespace std;
 
@@ -169,18 +169,6 @@ public:
 	float processing_time() {
 		//Here we should get a random number according to some distribution
 		return id*3.14159265359;
-	}
-
-
-	int get_block_info(Group & the_group, const int id, vector<int>& destinations , float & time, Resources & global_res ) {
-
-		the_group.add_res(id,res_needed,&global_res);
-		destinations = idsOut;
-		time = id*3.14159265359; //Here we need to adjust
-
-		return 0; // Return 
-
-
 	}
 
 

@@ -62,7 +62,6 @@ const history  walker::get_history() const noexcept {return hist;}
 void walker::addtq (const float time){hist.addtimeque(time);}
 /* Moves the walker in the next position */
 void walker::moveto(const int pos){
-  assert(pos >= 0);// if pos negative ??
   position=pos;
   hist.next_step(pos);
 }
@@ -70,12 +69,11 @@ void walker::moveto(const int pos){
 
 /*We have to think to something in the case after this process we have to create
  a son walker */
-void walker::start(const float time, const std::vector<int> dest, const Wlk_Resources res){
+void walker::start(const float time, const std::vector<int> dest){
         /* Maybe we could say that destination -1 is the end? */
         destination=dest;
         hist.addtimeexe(time);
-	alloc_res=res;
-    }
+}
 
     /* add here resources as output */
 void walker::stop (Wlk_Resources * res){
@@ -84,7 +82,7 @@ void walker::stop (Wlk_Resources * res){
   if ((int)destination.size()==1){
     if (destination[0]!=-1) moveto(destination[0]);
   }
-    alloc_res=Wlk_Resources();
+  alloc_res.release();
 }
 
 /* Allocate resources to a walker */
@@ -144,23 +142,9 @@ Group::Group() :
 //}
 
 
-
-
-void Group::create_walker(const int pos, const int par_id,
-			  const int my_id){
-  walker_list.push_back(walker(pos,par_id, tot_time, my_id));
-  if (par_id==my_id) walker_list[par_id].add_son(my_id);
-  status.push_back(0);
-  nwalker++;
-  totwalker++;
-  //maybe if "pos" is a logic gate we can put it at the top of the cue ;)
-  queue.push_back(nwalker-1);
-}
-
-
 void Group::create_walker(const int pos, const int par_id,
 			  const int my_id, const int ntype_res){
-  walker_list.push_back(walker(pos,par_id, my_id, ntype_res));
+  walker_list.push_back(walker(pos,par_id, my_id, tot_time,  ntype_res));
   if (par_id==my_id) walker_list[par_id].add_son(my_id);
   status.push_back(0);
   nwalker++;
@@ -168,6 +152,8 @@ void Group::create_walker(const int pos, const int par_id,
   //maybe if "pos" is a logic gate we can put it at the top of the cue ;)
   queue.push_back(nwalker-1);
 }
+
+
 
 void Group::add_time_queue(const float time){
   /* Add the time to the processes in the queue */
@@ -186,21 +172,22 @@ void Group::add_time_queue(const float time){
 
 
 void Group::activate_process(const int id, const float t, const std::vector<int> dest,
-			     const int queue_pos, const Wlk_Resources res){
+			     const int queue_pos){
   status[id]=1;
   queue.erase(queue.begin()+queue_pos);
   running.push_back(id);
   exec_time.push_back(t);
-  walker_list[id].start(t,dest,res);
+  walker_list[id].start(t,dest);
 }
 
 /* Maybe at the end of this we shoud free the resources
  * running_pos is the position in the vector of running
  * processes.
  */
-void Group::end_process(const int running_pos, Wlk_Resources * res){
+void Group::end_process(const int running_pos){
   int id{running[running_pos]};
-  walker_list[id].stop(res);
+  Wlk_Resources res;
+  walker_list[id].stop(&res);
   //free the resources
   running.erase(running.begin()+running_pos);
   exec_time.erase(exec_time.begin()+running_pos);
@@ -208,7 +195,7 @@ void Group::end_process(const int running_pos, Wlk_Resources * res){
   if (walker_list[id].get_destination()[0]==-1){
     //print history
     walker_list.erase(walker_list.begin()+id);
-    status.erase(status.begin()+id);                                                                                                                 
+    status.erase(status.begin()+id);                                      
     erased_update(id);
     nwalker--;
   }
@@ -246,15 +233,48 @@ vector<int> Group::get_alloc_res(const int id) {
 }
 
 
-void Group::check_stop_evolve(const int ntype_res){
+void Group::check_stop_evolve(Resources & tot_res){
   float eps{0.000001};
-  Wlk_Resources res(ntype_res);
+  Wlk_Resources res(tot_res.get_ntype());
   for (auto  i=0;i!=(int)running.size();i++){
     if (exec_time[i]<eps) {
       end_process(i, &res);
+      
     }
   }
 }
 
+void Group::check_queue(Resources global_res, vector<unique_ptr<Block>> & blocksVector){
+  std::vector <int> dest;
+  float process_time;
+  int queue_pos{0};
+  for (auto i=queue.begin();i!=queue.end();i++){
+    int do_start{get_block_info(*blocksVector[walker_list[*i].get_pos()],
+			 *i, dest, process_time, global_res)};
+    if (do_start==1) activate_process(*i, process_time, dest, queue_pos);
+    queue_pos++;
+    if (do_start<0) break;
+  }
+}
+
+
+
+
+int Group::get_block_info(Block blk, const int id, vector<int>& destinations , 
+		   float & time, Resources & global_res )
+{
+  add_res(id,blk.get_res_needed(),&global_res);
+  destinations = blk.get_idsOut();
+  time = id*3.14159265359; //Here we need to adjust
+  return 0; // Return 
+}
+  
+int Group::next_operation(int & new_pos, float & next_time){
+  if (nwalker>0){
+    next_time=exec_time[0];
+    for (auto  i=exec_time.begin();i!=exec_time.end();i++)  if (next_time>*i) next_time=*i;
+  }
+  return 1;
+}
 
 

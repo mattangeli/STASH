@@ -24,16 +24,18 @@ class Wlk_Resources{
 //    void release_res(Resources * global_res);
 
 //    void add_res(vector<int> const& needed , Resources * global_res);
+     
+     std::vector<int>  get_resources() const;
+     
+     int get_resources(int res_type) const;
 
-    std::vector<int>  get_resources() const;
+     void set(int res_type, int newvalue);
+     
+     int ntypes() const;
+	
+     void release();
 
-	int get_resources(int res_type) const;
-
-	void set(int res_type, int newvalue);
-
-	int ntypes() const;
-
-    std::vector<int> get_variables() const;// { // return all  the other protected variables in a vector [ntype_res, num_tot_res, num_res_alloc]
+     std::vector<int> get_variables() const;// { // return all  the other protected variables in a vector [ntype_res, num_tot_res, num_res_alloc]
      //  std::vector<int> var{ntype_res, num_tot_res, num_res_alloc};
      //  return var;
     //}

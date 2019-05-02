@@ -7,8 +7,8 @@
 #include "history.h"
 #include <cassert>
 #include "resources.h"
-#include "wlk_resources.h"
-
+#include "Wlk_Resources.h"
+#include "block.h"
 
 
 template <class T>
@@ -58,7 +58,7 @@ class walker {
   /* Moves the walker in the next position */
   void moveto(const int pos);
   
-  void start(const float time, const std::vector<int> dest, const Wlk_Resources res);
+  void start(const float time, const std::vector<int> dest);
   /* add here resources as output */
   void stop (Wlk_Resources * res);
 
@@ -93,9 +93,6 @@ public:
     void check_stop_evolve();
 
     void create_walker(const int pos, const int par_id,
-                       const int my_id);
-
-    void create_walker(const int pos, const int par_id,
                        const int my_id, const int ntype_res);
 
     void add_time_queue(const float time);
@@ -103,7 +100,7 @@ public:
     void move_walker(const int id, const int pos);
 
     void activate_process(const int id, const float t, const std::vector<int> dest,
-                          const int queue_pos, const Wlk_Resources res);
+                          const int queue_pos);
 
     int get_nwalker(){return nwalker;};
     vector<int> get_alloc_res(const int id);
@@ -121,11 +118,17 @@ public:
 
     void add_res(const int id,Wlk_Resources const& needed , Resources * global_res);
 
-    void check_stop_evolve(const int ntype_res);
+    void check_stop_evolve(Resources & total_res);
 
     void print_status();
 
+    //It can be a source of segmentation fault
+    void check_queue(Resources global_res, vector<unique_ptr<Block>> & blocksVector);
+   
+    int get_block_info(Block blk, const int id, vector<int>& destinations , 
+		       float & time, Resources & global_res );
 
+    int next_operation(int & new_pos, float & next_time);
 };
   
 

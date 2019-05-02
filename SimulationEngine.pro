@@ -11,13 +11,15 @@ SOURCES += \
     main.cpp \
     block.cpp \
     walker.cpp \
-    history.cpp
+    history.cpp \
+    Wlk_Resources.cpp
 
 HEADERS += \
     block.h \
     history.h \
     resources.h \
-    walker.h
+    walker.h \
+    Wlk_Resources.h
 
 DISTFILES += \
     CMakeLists.txt

@@ -4,7 +4,7 @@
 #include "block.h"
 #include "walker.h"
 #include "resources.h"
-//#include "wlk_resources.h"
+
 
 using namespace std;
 
@@ -120,12 +120,12 @@ int main()
 	cout << "Next we go to Block " << blocksVector[2]->get_next_id() << endl;
 */
 
-
+/*
 	cout << endl << endl << "#####  Starting test 0x0a8 ######" << endl;
 
 	Group testgroup;
 
-	testgroup.create_walker(0,-1,0,3);
+	testgroup.create_walker(0,2,2,3);
 	testgroup.create_walker(0,1,1,3);
 
 	//testgroup.add_res(1,res_need1,&res_type);
@@ -151,7 +151,7 @@ int main()
 
 	cout << "#############  Done  ############" << endl;
 
-
+*/
 /*
 	//Proposal for the main program
 
@@ -180,21 +180,27 @@ int main()
 		}
 
 */
-/*
-	int next{1}, new_pos{0};
+    
+    vector<int> tot_res(3);
+    Resources global_res(tot_res);
+    vector<unique_ptr<Block>> blocksVector;
+    int next{1}, new_pos{0};
+    float next_time;
+    Group test;
 	//next identifies the next action (0 stop, 1 terminate process, 2 create walker in position
 	// new_pos
-	while (next!=0){
-	  if (next==1) test.group(res_type);
-	  if (next==2) test.create_walker(new_pos, group.get_nwalker(), group.get_nwalker(), res_type);
-	  //we need to go through the queue 
-	  next=test.next_operation(&new_pos);
-	}
+    while (next!=0){
+      if (next==1) test.check_stop_evolve(global_res); //here we free resources
+      if (next==2) test.create_walker(new_pos, test.get_nwalker(), 
+				      test.get_nwalker(), global_res.get_ntype());
+      test.check_queue(global_res, blocksVector);
+      next=test.next_operation(new_pos, next_time);
+    }
 
-*/
+
  	
 	cout << "CCC START HERE "<<endl;
-
+	/*
 	Group bla;
 	Wlk_Resources pippo(2,1), paperino;
 
@@ -222,7 +228,7 @@ int main()
 	//test.add_time_queue(0.35);
 	//test.print_status();
 	cout << "CCC ENDS HERE "<<endl;
-	
+	*/
 
 /*
    //TEST WALKER

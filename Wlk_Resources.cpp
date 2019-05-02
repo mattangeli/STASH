@@ -78,7 +78,7 @@
        return var;
     }
 
-
+void Wlk_Resources::release() {for (auto i=resources.begin();i!=resources.end();i++) *i=0;}
 /*
 std::ostream& operator<<(std::ostream& os, const Wlk_Resources& res) {
   os << res.get_resources()<<endl;

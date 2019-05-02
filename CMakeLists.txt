@@ -19,7 +19,6 @@ include_directories(${PROJECT_SOURCE_DIR})
 #    block.h
 #    walker.h
 #    history.h
-#    wlk_resources.h
 #)
 #
 #include_directory(.)
