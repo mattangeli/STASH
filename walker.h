@@ -67,7 +67,7 @@ class walker {
   void add_son(const int id);
 
   void check_parent_sons(const int id);
-  void add_res(Wlk_Resources const& needed , Resources * global_res);
+  int add_res(Wlk_Resources const& needed , Resources * global_res);
   void release_res(Resources & global_res);
 
 
@@ -117,7 +117,7 @@ public:
      */
     void end_process(const int running_pos, Resources & tot_res);
 
-    void add_res(const int id,Wlk_Resources const& needed , Resources * global_res);
+    int add_res(const int id,Wlk_Resources const& needed , Resources * global_res);
 
     void check_stop_evolve(Resources & total_res);
 

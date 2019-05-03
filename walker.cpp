@@ -83,8 +83,9 @@ void walker::stop(){
 }
 
 /* Allocate resources to a walker */
-void walker::add_res(Wlk_Resources const& needed , Resources * global_res){
-    global_res->res_allocate(needed, alloc_res);
+int walker::add_res(Wlk_Resources const& needed , Resources * global_res){
+    int do_start = global_res->res_allocate(needed, alloc_res);
+	return do_start;
     }
 
 void walker::release_res(Resources & global_res) {
@@ -224,8 +225,8 @@ void Group::erased_update(const int id){
 }
 
 
-void Group::add_res(const int id, Wlk_Resources const& needed , Resources * global_res) {
-	walker_list[id].add_res(needed,global_res);
+int Group::add_res(const int id, Wlk_Resources const& needed , Resources * global_res) {
+	return walker_list[id].add_res(needed,global_res);
 }
 
 
@@ -249,10 +250,11 @@ void Group::check_queue(Resources global_res, vector<unique_ptr<Block>> & blocks
   std::vector <int> dest;
   float process_time;
   int queue_pos{0};
+  int do_start{-10};
   for (auto i=queue.begin();i!=queue.end();i++){
-    int do_start{get_block_info(*blocksVector[walker_list[*i].get_pos()],
-			 *i, dest, process_time, global_res)};
-    if (do_start==1) activate_process(*i, process_time, dest, queue_pos);
+    do_start = get_block_info(*blocksVector[walker_list[*i].get_pos()],
+			      *i, dest, process_time, global_res);
+    if (abs(do_start)==1) activate_process(*i, process_time, dest, queue_pos);
     queue_pos++;
     if (do_start<0) break;
   }
@@ -264,10 +266,10 @@ void Group::check_queue(Resources global_res, vector<unique_ptr<Block>> & blocks
 int Group::get_block_info(Block blk, const int id, vector<int>& destinations , 
 		   float & time, Resources & global_res )
 {
-  add_res(id,blk.get_res_needed( (int)global_res.get_ntype()), &global_res);
+  int do_start = add_res(id,blk.get_res_needed( (int)global_res.get_ntype()), &global_res);
   destinations = blk.get_idsOut();
   time = id*3.14159265359; //Here we need to adjust
-  return 0; // Return 
+  return do_start; // Return 
 }
   
 int Group::next_operation(int & new_pos, float & next_time){
