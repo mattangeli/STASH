@@ -12,7 +12,7 @@ SOURCES += \
     block.cpp \
     walker.cpp \
     history.cpp \
-    Wlk_Resources.cpp
+    Wlk_Resources.cpp \
 
 HEADERS += \
     block.h \

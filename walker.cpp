@@ -147,7 +147,7 @@ Group::Group() :
 void Group::create_walker(const int pos, const int par_id,
 			  const int my_id, const int ntype_res){
   walker_list.push_back(walker(pos,par_id, my_id, tot_time,  ntype_res));
-  if (par_id==my_id) walker_list[par_id].add_son(my_id);
+  if (par_id!=my_id) walker_list[par_id].add_son(my_id);
   status.push_back(0);
   nwalker++;
   totwalker++;
@@ -269,7 +269,8 @@ int Group::get_block_info(Block blk, const int id, vector<int>& destinations ,
   int do_start = add_res(id,blk.get_res_needed( (int)global_res.get_ntype()), &global_res);
   destinations = blk.get_idsOut();
   time = id*3.14159265359; //Here we need to adjust
-  return do_start; // Return 
+  return 1;
+  //return do_start; // Return
 }
   
 int Group::next_operation(int & new_pos, float & next_time){
@@ -278,6 +279,10 @@ int Group::next_operation(int & new_pos, float & next_time){
     for (auto  i=exec_time.begin();i!=exec_time.end();i++)  if (next_time>*i) next_time=*i;
   }
   return 1;
+}
+
+float Group::get_exec_time(){
+  return tot_time;
 }
 
 

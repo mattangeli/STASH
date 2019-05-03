@@ -130,6 +130,8 @@ public:
 		       float & time, Resources & global_res );
 
     int next_operation(int & new_pos, float & next_time);
+
+    float get_exec_time();
 };
   
 
