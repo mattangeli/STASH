@@ -69,13 +69,16 @@ int main()
 	// new_pos
     while (next!=0){
       cout << next << endl;
-      if (next==1) test.check_stop_evolve(global_res); //here we free resources
+      if (next==1) {
+	test.check_stop_evolve(global_res); //here we free resources
+      }
       if (next==2) test.create_walker(new_pos, test.get_nwalker(), 
 				      test.get_nwalker(), global_res.get_ntype());
       test.print_status();
       test.check_queue(global_res, blocksVector);
       next=test.next_operation(new_pos, next_time);
-      cout << "Fuck you Davide " << test.get_exec_time() << endl;
+      test.add_time_queue(next_time);
+      cout << "Next" << next<< " " <<test.get_exec_time() << endl;
     }
 
  	

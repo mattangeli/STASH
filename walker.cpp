@@ -104,10 +104,16 @@ void walker::removed(const int id){
     if (parent_id>id) parent_id--;
   }
   else{
+    int remove_son=-1;
     if (my_id>id) my_id--;
     if (parent_id>id) parent_id--;
-    for (auto i=children_id.begin(); i!=children_id.end(); i++)
-      if (*i>id) *i--;
+    for (auto i=0; i!=(int)children_id.size(); i++){
+      if (children_id[i]>id){
+	children_id[i]--;
+      }
+      else if (children_id[i]==id) remove_son=i;
+    }
+    if (remove_son>=0) children_id.erase(children_id.begin()+remove_son);
   }
 }
 
@@ -153,6 +159,7 @@ void Group::create_walker(const int pos, const int par_id,
   totwalker++;
   //maybe if "pos" is a logic gate we can put it at the top of the cue ;)
   queue.push_back(nwalker-1);
+  std::cout<< "Passi qui, queue"<< queue<< std::endl;
 }
 
 
@@ -200,8 +207,10 @@ void Group::end_process(const int running_pos, Resources & tot_res){
     status.erase(status.begin()+id);                                      
     erased_update(id);
     nwalker--;
+    std::cout <<"After killing a walker"<< queue<<std::endl;
   }
   else   queue.push_back(id);
+  std::cout <<"Queue after end process "<< queue<<std::endl;
 }
 
 
@@ -238,43 +247,53 @@ vector<int> Group::get_alloc_res(const int id) {
 void Group::check_stop_evolve(Resources & tot_res){
   float eps{0.000001};
   //Wlk_Resources res(tot_res.get_ntype());
+  std::vector<int> to_stop;
   for (auto  i=0;i!=(int)running.size();i++){
     if (exec_time[i]<eps) {
-      end_process(i, tot_res);
-      
+      to_stop.push_back(i);
     }
   }
+  for (auto i=0;i!=(int)to_stop.size();i++)
+    end_process(to_stop[i]-i, tot_res);
 }
 
 void Group::check_queue(Resources global_res, vector<unique_ptr<Block>> & blocksVector){
-  std::vector <int> dest;
+  std::vector <int> dest, to_start, queue_pos;
   float process_time;
-  int queue_pos{0};
   int do_start{-10};
+  int j{0};
+  
   for (auto i=queue.begin();i!=queue.end();i++){
     do_start = get_block_info(*blocksVector[walker_list[*i].get_pos()],
 			      *i, dest, process_time, global_res);
-    if (abs(do_start)==1) activate_process(*i, process_time, dest, queue_pos);
-    queue_pos++;
+    std::cout<< "Passi qui, do_start "<< do_start<< std::endl;
+    if (abs(do_start)==1) {
+      to_start.push_back(*i);
+      queue_pos.push_back(j);
+    }
+    j++;
     if (do_start<0) break;
   }
+  for (auto i=0;i!=(int)to_start.size();i++) activate_process(to_start[i], process_time, dest, queue_pos[i]-i);
 }
 
 
 
 
 int Group::get_block_info(Block blk, const int id, vector<int>& destinations , 
-		   float & time, Resources & global_res )
+		   float & _time, Resources & global_res )
 {
   int do_start = add_res(id,blk.get_res_needed( (int)global_res.get_ntype()), &global_res);
   destinations = blk.get_idsOut();
-  time = id*3.14159265359; //Here we need to adjust
+  _time = (id+1)*3.14159265359; //Here we need to adjust
+  std::cout<< "Passi qui, destinations, id, _time"<<destinations<< " "<<id <<" " << _time<<std::endl;
   return 1;
   //return do_start; // Return
 }
   
 int Group::next_operation(int & new_pos, float & next_time){
   if (nwalker>0){
+    
     next_time=exec_time[0];
     for (auto  i=exec_time.begin();i!=exec_time.end();i++)  if (next_time>*i) next_time=*i;
   }
