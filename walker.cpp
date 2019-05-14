@@ -159,7 +159,7 @@ void Group::create_walker(const int pos, const int par_id,
   totwalker++;
   //maybe if "pos" is a logic gate we can put it at the top of the cue ;)
   queue.push_back(nwalker-1);
-  std::cout<< "Passi qui, queue"<< queue<< std::endl;
+  //  std::cout<< "Passi qui, queue"<< queue<< std::endl;
 }
 
 
@@ -204,30 +204,33 @@ void Group::end_process(const int running_pos, Resources & tot_res){
   if (walker_list[id].get_destination()[0]==-1){
     //print history
     walker_list.erase(walker_list.begin()+id);
-    status.erase(status.begin()+id);                                      
+    status.erase(status.begin()+id);                 
     erased_update(id);
-    nwalker--;
-    std::cout <<"After killing a walker"<< queue<<std::endl;
+    nwalker--;        
+    std::cout <<"After killing walker "<< id <<std::endl;
   }
   else   queue.push_back(id);
-  std::cout <<"Queue after end process "<< queue<<std::endl;
+  //  std::cout <<"Queue after end process "<< queue<<std::endl;
 }
 
 
 void Group::print_status(){
   for (auto i=0;i<(int)walker_list.size();i++)
     std::cout<< i <<" "<<walker_list[i]<<" "<< status[i]<<std::endl;
-  std::cout<< "Queue vector "<< queue<< std::endl;
+  //  std::cout<< "Queue vector "<< queue<< std::endl;
 }
 
 
 void Group::erased_update(const int id){
-  for (auto  i=running.begin();i!=running.end();i++)
-    if (*i>id) *i--;
-  for (auto  i=queue.begin();i!=queue.end();i++)
-    if (*i>id) *i--;
-  for (auto i=walker_list.begin();i!=walker_list.end();i++)
-    i->removed(id);
+  for (auto  i=0;i!=running.size();i++){
+    if (running[i]>id) running[i]--;
+  }
+  for (auto  i=0;i!=queue.size();i++){
+    if (queue[i]>id) queue[i]--;
+  }
+  for (auto i=0;i!=walker_list.size();i++){
+    walker_list[i].removed(id);
+  }
   /*  for (auto  i=walker_list.begin()+id;i!=running.end();i++)
     *i.check_parent_sons(id);
     */
@@ -257,6 +260,9 @@ void Group::check_stop_evolve(Resources & tot_res){
     end_process(to_stop[i]-i, tot_res);
 }
 
+
+
+
 void Group::check_queue(Resources global_res, vector<unique_ptr<Block>> & blocksVector){
   std::vector <int> dest, to_start, queue_pos;
   float process_time;
@@ -266,7 +272,7 @@ void Group::check_queue(Resources global_res, vector<unique_ptr<Block>> & blocks
   for (auto i=queue.begin();i!=queue.end();i++){
     do_start = get_block_info(*blocksVector[walker_list[*i].get_pos()],
 			      *i, dest, process_time, global_res);
-    std::cout<< "Passi qui, do_start "<< do_start<< std::endl;
+    //    std::cout<< "Passi qui, do_start "<< do_start<< std::endl;
     if (abs(do_start)==1) {
       to_start.push_back(*i);
       queue_pos.push_back(j);
@@ -285,8 +291,8 @@ int Group::get_block_info(Block blk, const int id, vector<int>& destinations ,
 {
   int do_start = add_res(id,blk.get_res_needed( (int)global_res.get_ntype()), &global_res);
   destinations = blk.get_idsOut();
-  _time = (id+1)*3.14159265359; //Here we need to adjust
-  std::cout<< "Passi qui, destinations, id, _time"<<destinations<< " "<<id <<" " << _time<<std::endl;
+  _time = (float)id+1+destinations[0]*0.1; //Here we need to adjust
+  //  std::cout<< "Passi qui, destinations, id, _time"<<destinations<< " "<<id <<" " << _time<<std::endl;
   return 1;
   //return do_start; // Return
 }
@@ -297,6 +303,7 @@ int Group::next_operation(int & new_pos, float & next_time){
     next_time=exec_time[0];
     for (auto  i=exec_time.begin();i!=exec_time.end();i++)  if (next_time>*i) next_time=*i;
   }
+  else next_time=0;
   return 1;
 }
 

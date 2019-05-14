@@ -4,11 +4,11 @@
 
 /* Overload the << operator for the history */
 std::ostream& operator<<(std::ostream& os, const history& v) {
-    os << v.len() << "  ";
+  os << "Total history length "<< v.len() << std::endl;
     for (const auto l : v.get_positions())
-      os << l << "  ";
+      os << "Positions history "<< l << std::endl;
     for (const auto l : v.get_record())
-        os << l << "  ";
+      os << "Record: Global time, Queue time, Exec time "<< l << std::endl;
     os << std::endl;
     return os;
 }
