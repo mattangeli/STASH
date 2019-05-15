@@ -267,11 +267,15 @@ void Group::check_stop_evolve(Resources & tot_res){
 
 void Group::check_queue(Resources & global_res, vector<unique_ptr<Block>> & blocksVector){
 
+ 
+/* This is the original one
+
   std::vector <int> dest, to_start, queue_pos;
   float process_time;
   int do_start{-10};
   int j{0};
-  
+
+
   for (auto i=queue.begin();i!=queue.end();i++){
     do_start = get_block_info(blocksVector[walker_list[*i].get_pos()],
 			      *i, dest, process_time, global_res);
@@ -287,7 +291,35 @@ void Group::check_queue(Resources & global_res, vector<unique_ptr<Block>> & bloc
 	activate_process(to_start[i], process_time, dest, queue_pos[i]-i);
 	cout << i<< " Starting walker " << to_start[i] << " at Block " << walker_list[to_start[i]].get_pos() << ": process_time = " << process_time << endl;
   }
-}
+*/
+
+// I would propose to do it in this way:
+
+  std::vector <int> dest;
+  float process_time;
+  int do_start{-10};
+
+  int queue_length = (int)queue.size();
+  int queue_pos{0};
+
+  for (int  ii=0; ii<queue_length; ii++){
+    do_start = get_block_info(blocksVector[walker_list[queue[queue_pos]].get_pos()],
+			      queue[queue_pos], dest, process_time, global_res);
+
+    if (abs(do_start)==1) {
+	cout << ii<< " Starting walker " << queue[queue_pos] << " at time " << tot_time << " at Block " << walker_list[queue[queue_pos]].get_pos() <<": process_time = " << process_time << endl;
+	activate_process(queue[queue_pos], process_time, dest, queue_pos);
+	queue_pos--;
+    }
+    queue_pos++;
+    if (do_start<-1) break;
+  }
+
+
+
+
+
+} // close function Group::check_queue
 
 
 
@@ -297,7 +329,8 @@ int Group::get_block_info(unique_ptr<Block> & blk, const int id, vector<int>& de
 {
   int do_start = add_res(id,blk->get_res_needed( (int)global_res.get_ntype()), global_res);
   destinations = blk->get_idsOut();
-  _time = (float)id+1+destinations[0]*0.1; //Here we need to adjust
+  //_time = (float)id+1+destinations[0]*0.1; //Here we need to adjust! Yes, so let's make something even more stupid ;)
+  _time = 1.0;	
   return do_start;
 }
   
