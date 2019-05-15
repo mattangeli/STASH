@@ -45,14 +45,8 @@ public:
      */
     int res_allocate(Wlk_Resources const& needed, Wlk_Resources & occup) {
         /* Dimension checks */
-      //      if (needed.ntypes() == occup.ntypes() && needed.ntypes() == (int)available.size()) 
             assert(needed.ntypes() == occup.ntypes() && needed.ntypes() == (int)available.size());
-        //if (needed.size() != occup.size() ||
-        //        needed.size() != available.size() ) {
 
-        //    cout << "Input vectors to function 'allocate' in Resource class have wrong length" << endl;
-        //}
-      //      cout<< (int)available.size() << " " << needed.ntypes()  << " " <<  occup.ntypes()<< endl;
         cout << "Allocated the following resources:" << endl;
 
         /* Go through all the types of resources */
@@ -73,6 +67,8 @@ public:
             }
 
         } //end for loop
+
+	cout << "Resources remaining: " << available[0] << endl;
 
 		if (are_all_res_avail && any_resources_remaining)   return 1;
 		if (are_all_res_avail && !any_resources_remaining)  return -1;

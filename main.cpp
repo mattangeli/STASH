@@ -49,18 +49,21 @@ int main()
 
     
     vector<int> tot_res(1);
+    tot_res[0]=4;
     Resources global_res(tot_res);
     Wlk_Resources wlkrestest(1);
-    wlkrestest.set(0,0);
+    wlkrestest.set(0,2);
     vector<unique_ptr<Block>> blocksVector;
     blocksVector.reserve(9);
 
     /* Initialize Blocks */
     int idTest;
     for (idTest = 0; idTest < 10; ++idTest) {
-        blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest));
+
+	blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest));
     }
     blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,-1), vector<float>(1,1), wlkrestest));
+
 
     int next{2}, new_pos{0}, aux{0};
     float next_time;
@@ -71,7 +74,7 @@ int main()
 
     while (next!=0){
 
-      cout << "Total simulation step " << aux << " Walker at the step " << test.get_nwalker()<< endl;
+      //cout << "Total simulation step " << aux << " Walker at the step " << test.get_nwalker()<< endl;
       if (next==1) {
 	test.check_stop_evolve(global_res); //here we free resources
       }
@@ -79,10 +82,10 @@ int main()
 				      test.get_nwalker(), global_res.get_ntype());
       test.check_queue(global_res, blocksVector);
       //remove for a huge performance improvement
-      cout<< "Status"<< endl;
-      test.print_status();
+      //cout<< "Status"<< endl;
+      //test.print_status();
       next=test.next_operation(new_pos, next_time);
-      if (aux<50) {
+      if (aux<5) {
 	next=2;
 	new_pos=0;
 	next_time=0;
@@ -90,7 +93,7 @@ int main()
       test.add_time_queue(next_time);
       aux++;
       if (test.get_nwalker()==0) next=0;
-      cout << "Next operation is " << next << " Total execution time " <<test.get_exec_time() << endl;
+      //cout << "Next operation is " << next << " Total execution time " <<test.get_exec_time() << endl;
     }
     cout << "Simulation completed"<< endl;
 

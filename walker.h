@@ -67,7 +67,7 @@ class walker {
   void add_son(const int id);
 
   void check_parent_sons(const int id);
-  int add_res(Wlk_Resources const& needed , Resources * global_res);
+  int add_res(Wlk_Resources const& needed , Resources & global_res);
   void release_res(Resources & global_res);
 
 
@@ -117,16 +117,16 @@ public:
      */
     void end_process(const int running_pos, Resources & tot_res);
 
-    int add_res(const int id,Wlk_Resources const& needed , Resources * global_res);
+    int add_res(const int id,Wlk_Resources const& needed , Resources & global_res);
 
     void check_stop_evolve(Resources & total_res);
 
     void print_status();
 
     //It can be a source of segmentation fault
-    void check_queue(Resources global_res, vector<unique_ptr<Block>> & blocksVector);
+    void check_queue(Resources & global_res, vector<unique_ptr<Block>> & blocksVector);
    
-    int get_block_info(Block blk, const int id, vector<int>& destinations , 
+    int get_block_info(unique_ptr<Block> & blk, const int id, vector<int>& destinations , 
 		       float & time, Resources & global_res );
 
     int next_operation(int & new_pos, float & next_time);

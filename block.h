@@ -114,56 +114,8 @@ public:
         cout << "I'm a taskBlock and I suck!" << endl;
     }
 
-    /*
-    OLD IDEA, WE DONT NEED THAT
-    //We need a function that checks if we have
-    //the resources to do this specific task.
-    //This means that every block also needs a member where
-    //we store what the block needs. This could be a vector, where
-    //at each index there is a different type of resource and the
-    //number at this index tells us how much of it we need.
-    //We might make this function private and use it in another function
-    //which is executing all functions (resource check+allocation),
-    //walker processing...
-    //Maybe make a public function for process start and one
-    //for process end.
-    bool resoureces_avail(Resources resource_) { //The input needs to be a resource type
-    if true { //this has to be replaced }
-    //Actually it could be something like (pseudocode)
-    //if all(vec_resouce_needed(:) <= resource_.avail(:)) {
-    //Alternatively we don't check and we just allocate all the
-    //available resources that we need. If not all are available
-    //we wait until the rest is available (but we already have reserved
-    //the ones that are available.
-        return true;
-        cout << "The resources requested are available" << endl;
-    }
-    else {
-        return false;
-        cout << "Resources NOT available" << endl;
-    }
-    }
 
-*/
-
-/*
-
-    // Allocate resources 
-    void resources_allocate(Resources& resource_) {
-        cout << "Allocating resources for Block " << id << endl;
-        resource_.res_allocate(res_needed, res_occup);
-    }
-
-    // After finishing the process we want to release the resources.
-    void resources_release(Resources& resource_) {
-        cout << "Releasing the resources of Block " << id << endl;
-        resource_.res_release(res_occup);
-    }
-
-
-*/
-
-    Wlk_Resources get_res_needed() {
+    Wlk_Resources get_res_needed(int len) {
         return res_needed;
     }
 
