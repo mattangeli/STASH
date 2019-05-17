@@ -68,6 +68,20 @@
 	int Wlk_Resources::ntypes() const {
 		return ntype_res;
 	}
+
+
+	//This function returns if all resources are 0
+	bool Wlk_Resources::are_res_zero() const {
+		bool result = true;
+		for (int ii = 0; ii < ntype_res; ii++) {
+			if (resources[ii] != 0) {
+				result = false;
+				break;
+			}
+		}
+		return result;
+	
+	}
 	
 	void Wlk_Resources::set(int res_type, int newvalue) {
 		resources[res_type] = newvalue;

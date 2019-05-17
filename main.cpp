@@ -4,9 +4,12 @@
 #include "block.h"
 #include "walker.h"
 #include "resources.h"
+#include "adjustidsOut.h"
 
 
 using namespace std;
+
+
 
 int main()
 {
@@ -54,15 +57,21 @@ int main()
     Wlk_Resources wlkrestest(1);
     wlkrestest.set(0,2);
     vector<unique_ptr<Block>> blocksVector;
-    blocksVector.reserve(9);
+    //blocksVector.reserve(9); I think we do not need that
+	
 
     /* Initialize Blocks */
     int idTest;
     for (idTest = 0; idTest < 10; ++idTest) {
-
-	blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest));
+		blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest));
+		
     }
     blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,-1), vector<float>(1,1), wlkrestest));
+
+	//Here we change the signs of the destinations, depending on the resources needed
+	//%%%%%%%%% To be activated when Claudio finishes his changes %%%%%%%%%%%
+	//adjust_idsOut_signs( blocksVector);
+
 
 
     int next{2}, new_pos{0}, aux{0};
@@ -101,3 +110,6 @@ int main()
 
     return 0;
 }
+
+
+

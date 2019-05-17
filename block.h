@@ -46,6 +46,18 @@ public:
 		return idsOut;
 	}
 
+	virtual bool do_need_resources() const {
+		return false;
+	}
+
+	//Nonvirtual function to make sign 
+	//of elements in the idsOut vector negative:
+	//Does not change sign, but always makes it negative
+	void make_idOut_negative(int const index) {
+		assert(index<nLegsOut);
+		idsOut[index] = -abs(idsOut[index]); 
+	}
+
 
 
 	//Return time needed for this Block
@@ -75,6 +87,12 @@ public:
     Wlk_Resources get_res_needed(int len) {
         return res_needed;
     }
+
+	//Return if taskblock needs resources. 
+	//Pay attention to the NOT when returning
+	bool do_need_resources() const {
+		return (!res_needed.are_res_zero());
+	}
 
 	//Return the time needed to complete this task
 	float processing_time() {
@@ -108,4 +126,11 @@ public:
     }
 };
 
+
+
+
+
 #endif // BLOCK_H
+
+
+

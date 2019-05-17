@@ -29,6 +29,8 @@ class Wlk_Resources{
      
      int get_resources(int res_type) const;
 
+     bool are_res_zero() const; 
+
      void set(int res_type, int newvalue);
      
      int ntypes() const;

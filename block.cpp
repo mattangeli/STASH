@@ -12,7 +12,7 @@ using namespace std;
 
 Block::Block(int id, vector<int> idsOut, vector<float> probsOut) {
     if ( idsOut.size() == probsOut.size() ) {
-        this->nLegsOut = idsOut.size();
+        this->nLegsOut = (int)idsOut.size();
 
         this->id = id;
         this->idsOut = idsOut;
@@ -56,5 +56,10 @@ mergandBlock::mergandBlock(int id, vector<int> idsOut, vector<float> probsOut, v
         cout << "    DEBUG: block is of type mergandBlock." << endl;
     #endif
 }
+
+
+
+
+
 
 
