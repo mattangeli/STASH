@@ -32,8 +32,10 @@ Block::~Block () {};
 
 taskBlock::taskBlock(int id, vector<int> idsOut, vector<float> probsOut, Wlk_Resources & res_needed_) :
     Block(id, idsOut, probsOut),
-    res_needed{res_needed_},
-    res_occup{Wlk_Resources(res_needed_.ntypes())} {
+    res_needed{res_needed_} {
+    //Dimension check: We want the vectors to have exactly length one for taskblock
+    //The check that the vectors have the same length is done when calling block
+    assert( (int)probsOut.size() == 1);
     #ifdef DEBUG
         cout << "    DEBUG: block is of type taskBlock." << endl;
     #endif
