@@ -102,7 +102,7 @@ private:
     default_random_engine randomEngine = default_random_engine(time(NULL));
     discrete_distribution<int> probsOutDist;
 public:
-    xorBlock(int, vector<int>, vector<float>, int);
+    xorBlock(int, vector<int>, vector<float>, int = 0);
     // Don't need to specify do_need_resources()
     // and processing_time(), since the defaults
     // are already meant for the gates.
@@ -110,8 +110,8 @@ public:
     // Function that tells you where you go that Davide has to implement.
     // It basically picks up one of the idsOut at random or based on
     // the probsOut.
-    int idNext() {
-        return idsOut[probsOutDist(randomEngine)];
+    vector<int> idNext() {
+        return vector<int>{(int)idsOut[probsOutDist(randomEngine)]};
     }
 };
 

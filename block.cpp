@@ -50,7 +50,7 @@ xorBlock::xorBlock(int id, vector<int> idsOut, vector<float> probsOut, int gatew
     // Some consistency checks
     // Redundant info here, but it's only at creation time so it doesn't hurt.
     switch (gatewayDirection) {
-        case 0:
+        case 0:     // Default type
             #ifdef DEBUG
                 cout << "    DEBUG: gatewayDirection -> Unspecified." << endl;
             #endif

@@ -118,15 +118,15 @@ int main()
         int nextId; // from 0 to 15
         const int nstars = 100;
         const int nrolls = 100000;
-        xorBlock myXorBlock = xorBlock(20, vector<int>{9,5,13,15}, vector<float>{0.25,0.25,0.5,0}, 0);
+        xorBlock myXorBlock = xorBlock(20, vector<int>{9,5,13,15}, vector<float>{0.25,0.25,0.5,0});
         for (int i=0; i < nrolls; i++) {
-            nextId = myXorBlock.idNext();
-            //cout << "    DEBUG::TEST: Next id " << nextId << endl;
+            nextId = myXorBlock.idNext()[0];
+            //cout << "    DEBUG::TEST:  Next id " << nextId << endl;
             ++outcomes[nextId];
         }
-        cout << "    DEBUG::TEST: ID     P (%)" << endl;
+        cout << "    DEBUG::TEST:  ID    P (%)" << endl;
         for (int i=0; i < 16; i++) {
-            cout << setfill('0')  << "    DEBUG::TEST: " << setw(2) << i << ":    " << setw(3) << outcomes[i]*nstars/nrolls << "    " << string(outcomes[i]*nstars/nrolls,'*') << endl;
+            cout << setfill(' ')  << "    DEBUG::TEST:  " << setw(2) << i << "    " << setw(3) << outcomes[i]*nstars/nrolls << "    " << string(outcomes[i]*nstars/nrolls,'*') << endl;
         }
     #endif
 
