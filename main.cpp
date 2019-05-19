@@ -6,6 +6,10 @@
 #include "resources.h"
 #include "adjustidsOut.h"
 
+#ifdef DEBUG
+    #include <iomanip>
+#endif
+
 
 using namespace std;
 
@@ -111,6 +115,28 @@ int main()
       cout << "Next time is " << next_time << endl;
     }
     cout << "Simulation completed"<< endl;
+
+
+
+    #ifdef DEBUG
+        // Xor Block Test
+        int outcomes[16]={};
+        int nextId; // from 0 to 15
+        const int nstars = 100;
+        const int nrolls = 100000;
+        xorBlock myXorBlock = xorBlock(20, vector<int>{9,5,13,15}, vector<float>{0.25,0.25,0.5,0});
+        for (int i=0; i < nrolls; i++) {
+            nextId = myXorBlock.idNext()[0];
+            //cout << "    DEBUG::TEST:  Next id " << nextId << endl;
+            ++outcomes[nextId];
+        }
+        cout << "    DEBUG::TEST:  ID    P (%)" << endl;
+        for (int i=0; i < 16; i++) {
+            cout << setfill(' ')  << "    DEBUG::TEST:  " << setw(2) << i << "    " << setw(3) << outcomes[i]*nstars/nrolls << "    " << string(outcomes[i]*nstars/nrolls,'*') << endl;
+        }
+    #endif
+
+
 
  	
 
