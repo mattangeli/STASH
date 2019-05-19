@@ -60,7 +60,7 @@ class walker {
   
   void start(const float time, const std::vector<int> dest);
   /* add here resources as output */
-  void stop();
+
 
   
   void removed(const int id);
@@ -83,7 +83,7 @@ std::ostream& operator<<(std::ostream& os, const walker& w);
 class Group {
   //nwalker is the number of active walkers, totwalker is the number
   //of walker from the beginning
-  int nwalker, next_to_finish, totwalker;
+  int nwalker, next_to_finish, totwalker, nblocks;
   float tot_time;
   std::vector<walker> walker_list;
   std::vector<int> queue, status,running;
@@ -92,6 +92,8 @@ public:
     Group();
 
     void check_stop_evolve();
+
+    void readnblocks(const int _nblocks);
 
     void create_walker(const int pos, const int par_id,
                        const int my_id, const int ntype_res);
@@ -132,6 +134,8 @@ public:
     int next_operation(int & new_pos, float & next_time);
 
     float get_exec_time();
+
+    float next_walker(int & new_pos);
 };
   
 

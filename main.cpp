@@ -58,15 +58,15 @@ int main()
     wlkrestest.set(0,2);
     vector<unique_ptr<Block>> blocksVector;
     //blocksVector.reserve(9); I think we do not need that
-	
-
+   
+    int nblocks{5};
     /* Initialize Blocks */
     int idTest;
-    for (idTest = 0; idTest < 10; ++idTest) {
+    for (idTest = 0; idTest < nblocks; ++idTest) {
 		blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest));
 		
     }
-    blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,-1), vector<float>(1,1), wlkrestest));
+    blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,nblocks), vector<float>(1,1), wlkrestest));
 
 	//Here we change the signs of the destinations, depending on the resources needed
 	//%%%%%%%%% To be activated when Claudio finishes his changes %%%%%%%%%%%
@@ -75,8 +75,10 @@ int main()
 
 
     int next{2}, new_pos{0}, aux{0};
-    float next_time;
+    float next_time, maxtime{100};
     Group test;
+    //Temporany function, it will be removed when the blocks will be inside the group/
+    test.readnblocks(nblocks);
 	//next identifies the next action (0 stop, 1 terminate process, 2 create walker in position
 	// new_pos
 
@@ -91,18 +93,22 @@ int main()
 				      test.get_nwalker(), global_res.get_ntype());
       test.check_queue(global_res, blocksVector);
       //remove for a huge performance improvement
-      //cout<< "Status"<< endl;
-      //test.print_status();
+      cout<< "Status"<< endl;
+      test.print_status();
+      
+
       next=test.next_operation(new_pos, next_time);
-      if (aux<5) {
+      /*      if (aux<5) {
 	next=2;
 	new_pos=0;
 	next_time=0;
-      }
+	}*/
       test.add_time_queue(next_time);
       aux++;
-      if (test.get_nwalker()==0) next=0;
-      //cout << "Next operation is " << next << " Total execution time " <<test.get_exec_time() << endl;
+      if (test.get_exec_time()> maxtime) next=0;
+      //      if (test.get_nwalker()==0) next=0;
+      cout << "Next operation is " << next << " Total execution time " <<test.get_exec_time() << endl;
+      cout << "Next time is " << next_time << endl;
     }
     cout << "Simulation completed"<< endl;
 
