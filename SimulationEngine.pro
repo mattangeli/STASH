@@ -15,6 +15,7 @@ SOURCES += \
     Wlk_Resources.cpp \
 
 HEADERS += \
+    adjustidsOut.h \
     block.h \
     history.h \
     resources.h \

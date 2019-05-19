@@ -33,19 +33,46 @@ Block::~Block () {};
 taskBlock::taskBlock(int id, vector<int> idsOut, vector<float> probsOut, Wlk_Resources & res_needed_) :
     Block(id, idsOut, probsOut),
     res_needed{res_needed_} {
-    //Dimension check: We want the vectors to have exactly length one for taskblock
-    //The check that the vectors have the same length is done when calling block
-    assert( (int)probsOut.size() == 1);
     #ifdef DEBUG
         cout << "    DEBUG: block is of type taskBlock." << endl;
     #endif
+    //Dimension check: We want the vectors to have exactly length one for taskblock
+    //The check that the vectors have the same length is done when calling block
+    assert( (int)probsOut.size() == 1);
 }
 
-xorBlock::xorBlock(int id, vector<int> idsOut, vector<float> probsOut) :
-    Block(id, idsOut, probsOut) {
+xorBlock::xorBlock(int id, vector<int> idsOut, vector<float> probsOut, int gatewayDirection_) :
+    Block(id, idsOut, probsOut),
+    gatewayDirection{gatewayDirection_} {
     #ifdef DEBUG
         cout << "    DEBUG: block is of type xorBlock." << endl;
     #endif
+    // Some consistency checks
+    // Redundant info here, but it's only at creation time so it doesn't hurt.
+    switch (gatewayDirection) {
+        case 0:
+            #ifdef DEBUG
+                cout << "    DEBUG: gatewayDirection -> Unspecified." << endl;
+            #endif
+            break;
+        case 1:
+            #ifdef DEBUG
+                cout << "    DEBUG: gatewayDirection -> Converging." << endl;
+            #endif
+            assert( nLegsOut <= 1 );
+            break;
+        case 2:
+            #ifdef DEBUG
+                cout << "    DEBUG: gatewayDirection -> Diverging." << endl;
+            #endif
+            break;
+        case 3:
+            #ifdef DEBUG
+                cout << "    DEBUG: gatewayDirection -> Mixed." << endl;
+            #endif
+            break;
+    }
+    probsOutDist = discrete_distribution<int>(probsOut.begin(),probsOut.end());
 }
 
 
