@@ -45,7 +45,6 @@ int main()
 			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkres_zero));
 		
     }
-    blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,nblocks), vector<float>(1,1), wlkres_zero));
 
 	//Here we change the signs of the destinations, depending on the resources needed
 	//Negative sign means that no resources are needed for the next block 
@@ -55,7 +54,7 @@ int main()
 
 
     int next{99}, new_pos{0}, aux{0};
-    float next_time, maxtime{50};
+    float next_time, maxtime{5};
     Group test( blocksVector );
     //Temporany function, it will be removed when the blocks will be inside the group/
     test.readnblocks(nblocks);

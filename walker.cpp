@@ -322,16 +322,21 @@ void Group::check_queue(Resources & global_res){
   std::vector <int> dest;
   float process_time;
   int do_start{-10};
+  int walkerpos;
 
   int queue_length = (int)queue.size();
   int queue_pos{0};
 
+
   for (int  ii=0; ii<queue_length; ii++){
-    do_start = get_block_info(blocksVector[walker_list[queue[queue_pos]].get_pos()],
+	
+	walkerpos = walker_list[queue[queue_pos]].get_pos();
+	assert(walkerpos < (int)blocksVector.size());
+    do_start = get_block_info(blocksVector[walkerpos],
 			      queue[queue_pos], dest, process_time, global_res);
 
     if (abs(do_start)==1) {
-	cout << ii<< " Starting walker " << queue[queue_pos] << " at time " << tot_time << " at Block " << walker_list[queue[queue_pos]].get_pos() <<": process_time = " << process_time << endl;
+	cout << ii<< " Starting walker " << queue[queue_pos] << " at time " << tot_time << " at Block " << walkerpos <<": process_time = " << process_time << endl;
 	activate_process(queue[queue_pos], process_time, dest, queue_pos);
 	queue_pos--;
     }
@@ -351,7 +356,8 @@ int Group::get_block_info(unique_ptr<Block> & blk, const int id, vector<int>& de
   int do_start = add_res(id,blk->get_res_needed( (int)global_res.get_ntype()), global_res);
   destinations = blk->get_idsOut();
   //_time = (float)id+1+destinations[0]*0.1; //Here we need to adjust! Yes, so let's make something even more stupid ;)
-    _time = 1.0;	
+  //_time = 0.0;	
+  _time = blk->processing_time();
   return do_start;
 }
   
