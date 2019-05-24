@@ -88,8 +88,12 @@ class Group {
   std::vector<walker> walker_list;
   std::vector<int> queue, status,running;
   std::vector<float> exec_time;
+  vector<unique_ptr<Block>> blocksVector;
+
 public:
     Group();
+
+	Group( vector<unique_ptr<Block>> & blocksVector_);
 
     void check_stop_evolve();
 
@@ -126,7 +130,7 @@ public:
     void print_status();
 
     //It can be a source of segmentation fault
-    void check_queue(Resources & global_res, vector<unique_ptr<Block>> & blocksVector);
+    void check_queue(Resources & global_res);
    
     int get_block_info(unique_ptr<Block> & blk, const int id, vector<int>& destinations , 
 		       float & time, Resources & global_res );
