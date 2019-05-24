@@ -79,7 +79,7 @@ void walker::start(const float time, const std::vector<int> dest){
 
 /* Allocate resources to a walker */
 int walker::add_res(Wlk_Resources const& needed , Resources & global_res){
-    cout << "KL Allocating resources for walker " << my_id << endl;
+    //cout << "Allocating resources for walker " << my_id << endl;
     int do_start = global_res.res_allocate(needed, alloc_res);
 	return do_start;
     }
@@ -141,8 +141,30 @@ Group::Group() :
   status{std::vector<int> ()}    ,
   running{std::vector<int>()} ,
   exec_time{std::vector<float>()}
-{running.push_back(-1);
-  exec_time.push_back(0.0);}
+  {
+  running.push_back(-1);
+  exec_time.push_back(0.0);
+  cout << "Warning: Group initialized without Blocks" << endl;
+  }
+
+
+Group::Group( vector<unique_ptr<Block>> & blocksVector_ ) :
+  blocksVector{std::move(blocksVector_)},
+  nwalker{0},
+  next_to_finish{-1},
+  totwalker{0},
+  nblocks{0},
+        //    walker_list{std::vector<walker>(init_length)},/
+  tot_time{0.0},
+  walker_list{std::vector<walker>()}    ,
+  queue{std::vector<int>()}    ,
+  status{std::vector<int> ()}    ,
+  running{std::vector<int>()} ,
+  exec_time{std::vector<float>()}
+  {
+  running.push_back(-1);
+  exec_time.push_back(0.0);
+  }
 
 //Temporany function, it will be removed when the blocks will be inside the group/
 void Group::readnblocks(int _nblocks){
@@ -155,13 +177,19 @@ void Group::readnblocks(int _nblocks){
 
 void Group::create_walker(const int pos, const int par_id,
 			  const int my_id, const int ntype_res){
+  cout << "Creating walker with id " << my_id << " at time " << tot_time << endl;
   walker_list.push_back(walker(pos,par_id, my_id, tot_time,  ntype_res));
   if (par_id!=my_id) walker_list[par_id].add_son(my_id);
   status.push_back(0);
   nwalker++;
   totwalker++;
-  //maybe if "pos" is a logic gate we can put it at the top of the cue ;)
-  queue.push_back(nwalker-1);
+  //If the block "pos" does not need resources, 
+  //place it at the beginning of the queue
+  if (!(blocksVector[pos]->do_need_resources())) {
+    queue.insert(queue.begin(), nwalker-1);
+  } else {
+    queue.push_back(nwalker-1);
+  }
   //  std::cout<< "Passi qui, queue"<< queue<< std::endl;
 }
 
@@ -213,7 +241,7 @@ void Group::end_process(const int running_pos, Resources & tot_res){
     status.erase(status.begin()+id);                 
     erased_update(id);
     nwalker--;        
-    std::cout <<"After killing walker "<< id <<std::endl;
+    std::cout <<"Killing walker "<< id << " at time " << tot_time <<std::endl;
   }
   else {
     walker_list[id].moveto(abs(dest[0]));
@@ -225,7 +253,8 @@ void Group::end_process(const int running_pos, Resources & tot_res){
     }
     //Creating children
     for (auto i=1;i!=dest.size();i++){
-      cout << "The child walker is not created in this moment"<< endl;
+      cout << "Error in Group::end_process: Creation of children not implemented yet"<< endl;
+	  assert(false);
       //create_walker(dest[i],  id,  nwalker, ntype_res);
     }
   }
@@ -270,19 +299,26 @@ void Group::check_stop_evolve(Resources & tot_res){
   float eps{0.000001};
   //Wlk_Resources res(tot_res.get_ntype());
   std::vector<int> to_stop;
+
   for (auto  i=0;i!=(int)running.size();i++){
     if (exec_time[i]<eps) {
-      to_stop.push_back(i);
+	  //We have to exclude the case of the creation of a new walker,
+	  //which might also have exec_time=0
+      if (running[i]>=0) to_stop.push_back(i);
     }
   }
-  for (auto i=0;i!=(int)to_stop.size();i++)
+
+
+  for (auto i=0;i!=(int)to_stop.size();i++) {
+	
     end_process(to_stop[i]-i, tot_res);
+	}
 }
 
 
 
 
-void Group::check_queue(Resources & global_res, vector<unique_ptr<Block>> & blocksVector){
+void Group::check_queue(Resources & global_res){
   std::vector <int> dest;
   float process_time;
   int do_start{-10};
@@ -314,8 +350,8 @@ int Group::get_block_info(unique_ptr<Block> & blk, const int id, vector<int>& de
 {
   int do_start = add_res(id,blk->get_res_needed( (int)global_res.get_ntype()), global_res);
   destinations = blk->get_idsOut();
-  _time = (float)id+1+destinations[0]*0.1; //Here we need to adjust! Yes, so let's make something even more stupid ;)
-  //  _time = 1.0;	
+  //_time = (float)id+1+destinations[0]*0.1; //Here we need to adjust! Yes, so let's make something even more stupid ;)
+    _time = 1.0;	
   return do_start;
 }
   
@@ -326,7 +362,9 @@ int Group::next_operation(int & new_pos, float & next_time){
   int IdorPosition{0};
   next_time=exec_time[0];
   IdorPosition=0;  
+  //Find the next process to finish (find minimum in exec_time)
   for (auto  i=0;i!=(int)exec_time.size();i++)  {
+	//cout << "Exec_time= " << exec_time[i] << endl;
     if (next_time>exec_time[i]) {
       next_time=exec_time[i];
       IdorPosition=i;
@@ -335,7 +373,7 @@ int Group::next_operation(int & new_pos, float & next_time){
   
   if (running[IdorPosition]<0){
     new_pos=0;
-    exec_time[IdorPosition]=next_walker(new_pos);
+    exec_time[IdorPosition]=next_walker(new_pos)+next_time;
     return 2;
   }
   else  return 1;
@@ -347,6 +385,6 @@ float Group::get_exec_time(){
 
 float Group::next_walker(int & new_pos){
   new_pos=0;
-  return 5.0;
+  return 0.2;
 
 }

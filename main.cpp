@@ -23,44 +23,14 @@ int main()
     #endif
 
 
-//    vector<int> idsOut(3);
-//    vector<float> probsOut(3);
-////    Block helloworldBlock(0, idsOut, probsOut);
-
-//	idsOut[0]= 656;
-//	idsOut[1]= 2;
-//	idsOut[2]= 7;
-
-//	vector<int> res_tot(3);
-//	vector<int> res_need1(3);
-//	vector<int> res_need2(3);
-
-//	res_tot[0] = 2;
-//	res_tot[1] = 3;
-//	res_tot[2] = 4;
-
-//	res_need1[0] = 1;
-//	res_need1[1] = 2;
-//	res_need1[2] = 3;
-
-//	res_need2[0] = 1;
-//	res_need2[1] = 3;
-//	res_need2[2] = 4;
-
-//	Resources res_type(res_tot);
-
-//	Wlk_Resources wlkrestest(3);
-//	wlkrestest.set(0,1);
-//	wlkrestest.set(1,2);
-//	wlkrestest.set(2,3);
-
 
     
     vector<int> tot_res(1);
-    tot_res[0]=4;
+    tot_res[0]=1;
     Resources global_res(tot_res);
     Wlk_Resources wlkrestest(1);
-    wlkrestest.set(0,2);
+	Wlk_Resources wlkres_zero(1);
+    wlkrestest.set(0,1);
     vector<unique_ptr<Block>> blocksVector;
     //blocksVector.reserve(9); I think we do not need that
    
@@ -68,52 +38,62 @@ int main()
     /* Initialize Blocks */
     int idTest;
     for (idTest = 0; idTest < nblocks; ++idTest) {
-        blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest, 0, vector<float>(1,0)));
+		if (idTest == 3) {
+			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest));
+		}
+		else
+			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkres_zero));
 		
     }
-    blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,nblocks), vector<float>(1,1), wlkrestest));
+    blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,nblocks), vector<float>(1,1), wlkres_zero));
 
 	//Here we change the signs of the destinations, depending on the resources needed
-	//%%%%%%%%% To be activated when Claudio finishes his changes %%%%%%%%%%%
-	//adjust_idsOut_signs( blocksVector);
+	//Negative sign means that no resources are needed for the next block 
+	//and therefore the process has to be put to the top of the queue.
+	adjust_idsOut_signs( blocksVector);
 
 
 
-    int next{2}, new_pos{0}, aux{0};
-    float next_time, maxtime{100};
-    Group test;
+    int next{99}, new_pos{0}, aux{0};
+    float next_time, maxtime{50};
+    Group test( blocksVector );
     //Temporany function, it will be removed when the blocks will be inside the group/
     test.readnblocks(nblocks);
-	//next identifies the next action (0 stop, 1 terminate process, 2 create walker in position
-	// new_pos
+	//next identifies the next action:
+	// 0: stop 
+	// 1: terminate process
+	// 2: create new walker
 
 
-    while (next!=0){
+	while (next!=0){
 
-      //cout << "Total simulation step " << aux << " Walker at the step " << test.get_nwalker()<< endl;
-      if (next==1) {
-	test.check_stop_evolve(global_res); //here we free resources
-      }
-      if (next==2) test.create_walker(new_pos, test.get_nwalker(), 
+		//cout << "Total simulation step " << aux << " Walker at the step " << test.get_nwalker()<< endl;
+		if (next==1) {
+			//Stop one or more processes. Walkers reaching the end are killed
+			//The walker is put into the queue for the next block, 
+			//either on top if no resources are needed or to the end otherwise
+			test.check_stop_evolve(global_res); 
+		}
+		if (next==2) {
+			test.create_walker(new_pos, test.get_nwalker(), 
 				      test.get_nwalker(), global_res.get_ntype());
-      test.check_queue(global_res, blocksVector);
-      //remove for a huge performance improvement
-      cout<< "Status"<< endl;
-      test.print_status();
-      
+		}
 
-      next=test.next_operation(new_pos, next_time);
-      /*      if (aux<5) {
-	next=2;
-	new_pos=0;
-	next_time=0;
-	}*/
-      test.add_time_queue(next_time);
-      aux++;
-      if (test.get_exec_time()> maxtime) next=0;
-      //      if (test.get_nwalker()==0) next=0;
-      cout << "Next operation is " << next << " Total execution time " <<test.get_exec_time() << endl;
-      cout << "Next time is " << next_time << endl;
+		//Go through the queue and start the walkers being able to start
+		test.check_queue(global_res);
+
+		//Find the next operation: Possible (int) returns:
+		//1: Stop one or more processes
+		//2: Create a new walker
+		//next_time returns the time from now until we do this action
+		next=test.next_operation(new_pos, next_time);
+
+		//Move globaly to this time 
+		test.add_time_queue(next_time);
+		aux++;
+		if (test.get_exec_time()> maxtime) next=0;
+		//      if (test.get_nwalker()==0) next=0;
+		//cout << "Next operation is " << next << " Total execution time " <<test.get_exec_time() << endl;
     }
     cout << "Simulation completed"<< endl;
 
