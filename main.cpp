@@ -26,7 +26,7 @@ int main()
 
     
     vector<int> tot_res(1);
-    tot_res[0]=1;
+    tot_res[0]=20;
     Resources global_res(tot_res);
     Wlk_Resources wlkrestest(1);
 	Wlk_Resources wlkres_zero(1);
@@ -34,8 +34,9 @@ int main()
     vector<unique_ptr<Block>> blocksVector;
     //blocksVector.reserve(9); I think we do not need that
    
-    int nblocks{5};
+    int nblocks{6};
     /* Initialize Blocks */
+/*
     int idTest;
     for (idTest = 0; idTest < nblocks; ++idTest) {
 		if (idTest == 3) {
@@ -45,6 +46,13 @@ int main()
 			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkres_zero));
 		
     }
+*/
+	blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
+	blocksVector.emplace_back(new taskBlock(1, vector<int>(1,2), vector<float>(1,1), wlkrestest, 0, {1,0,0,0}));
+	blocksVector.emplace_back(new xorBlock(2, {3,4}, {0.1,0.2}));
+	blocksVector.emplace_back(new taskBlock(3, vector<int>(1,5), vector<float>(1,1), wlkrestest, 0, {1,0,0,0}));
+	blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
+	blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
 
 	//Here we change the signs of the destinations, depending on the resources needed
 	//Negative sign means that no resources are needed for the next block 
@@ -54,7 +62,7 @@ int main()
 
 
     int next{99}, new_pos{0}, aux{0};
-    float next_time, maxtime{5};
+    float next_time, maxtime{10};
     Group test( blocksVector );
     //Temporany function, it will be removed when the blocks will be inside the group/
     test.readnblocks(nblocks);

@@ -354,7 +354,7 @@ int Group::get_block_info(unique_ptr<Block> & blk, const int id, vector<int>& de
 		   float & _time, Resources & global_res )
 {
   int do_start = add_res(id,blk->get_res_needed( (int)global_res.get_ntype()), global_res);
-  destinations = blk->get_idsOut();
+  destinations = blk->idNext();
   //_time = (float)id+1+destinations[0]*0.1; //Here we need to adjust! Yes, so let's make something even more stupid ;)
   //_time = 0.0;	
   _time = blk->processing_time();
