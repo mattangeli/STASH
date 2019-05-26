@@ -68,7 +68,7 @@ public:
 
         } //end for loop
 
-	cout << "Resources remaining: " << available[0] << endl;
+	//cout << "Resources remaining: " << available[0] << endl;
 
 		if (are_all_res_avail && any_resources_remaining)   return 1;
 		if (are_all_res_avail && !any_resources_remaining)  return -1;

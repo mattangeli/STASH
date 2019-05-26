@@ -85,7 +85,7 @@ int walker::add_res(Wlk_Resources const& needed , Resources & global_res){
     }
 
 void walker::release_res(Resources & global_res) {
-	cout << "KL Releasing resources of walker " << my_id << endl;
+	//cout << "Releasing resources of walker " << my_id << endl;
 	global_res.res_release(alloc_res);
 	}
 
@@ -391,6 +391,6 @@ float Group::get_exec_time(){
 
 float Group::next_walker(int & new_pos){
   new_pos=0;
-  return 0.2;
+  return 0.65;
 
 }

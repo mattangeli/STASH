@@ -5,6 +5,7 @@
 #include "walker.h"
 #include "resources.h"
 #include "adjustidsOut.h"
+#include <limits>
 
 #ifdef DEBUG
     #include <iomanip>
@@ -34,9 +35,11 @@ int main()
     vector<unique_ptr<Block>> blocksVector;
     //blocksVector.reserve(9); I think we do not need that
    
-    int nblocks{6};
+    
     /* Initialize Blocks */
 /*
+	//First test
+	int nblocks{5};
     int idTest;
     for (idTest = 0; idTest < nblocks; ++idTest) {
 		if (idTest == 3) {
@@ -46,13 +49,75 @@ int main()
 			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkres_zero));
 		
     }
-*/
+
+	//Second test
+
+	int nblocks{6};
 	blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
 	blocksVector.emplace_back(new taskBlock(1, vector<int>(1,2), vector<float>(1,1), wlkrestest, 0, {1,0,0,0}));
 	blocksVector.emplace_back(new xorBlock(2, {3,4}, {0.1,0.2}));
 	blocksVector.emplace_back(new taskBlock(3, vector<int>(1,5), vector<float>(1,1), wlkrestest, 0, {1,0,0,0}));
 	blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
 	blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
+
+
+*/
+
+	float huge = numeric_limits<float>::max();
+	cout << "huge= " << huge << endl; 
+
+	int nblocks{16};
+	//Get issue description from customer
+	blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_zero, 1, {4.0,0.5,0,huge}));
+	//Able to provide solution (front office)?
+	blocksVector.emplace_back(new xorBlock(1, {2,4}, {0.6,0.4}));
+	//Provide solution to  customer
+	blocksVector.emplace_back(new taskBlock(2, vector<int>(1,3), vector<float>(1,1), wlkres_zero, 1, {10.0,2.5,0,huge}));
+	//Solution if effective?
+	blocksVector.emplace_back(new xorBlock(3, {nblocks,0}, {0.85,0.15}));
+	//Inform customer the issue is going to be escalated
+	blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_zero, 0, {0,0,0,0}));
+	//Request 1st level support
+	blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, 0, {0.5,0,0,0}));
+
+	//Find solution 1st level issue
+	blocksVector.emplace_back(new taskBlock(6, vector<int>(1,7), vector<float>(1,1), wlkres_zero, 1, {4.0,0.5,0,huge}));
+	// Able to provide 1st level solution?
+	blocksVector.emplace_back(new xorBlock(7, {8,9}, {0.7,0.3}));
+	// Provide solution to front office
+	blocksVector.emplace_back(new taskBlock(8, vector<int>(1,2), vector<float>(1,1), wlkres_zero, 1, {1.0,0.5,0,huge}));
+	// Request 2nd level support
+	blocksVector.emplace_back(new taskBlock(9, vector<int>(1,10), vector<float>(1,1), wlkres_zero, 0, {0.5,0,0,0}));
+
+
+	//Find solution 2nd level issue
+	blocksVector.emplace_back(new taskBlock(10, vector<int>(1,11), vector<float>(1,1), wlkres_zero, 1, {7.0,1.0,0,huge}));
+	// Able to provide 2nd level solution?
+	blocksVector.emplace_back(new xorBlock(11, {12,13}, {0.8,0.2}));
+	// Provide solution to first level support
+	blocksVector.emplace_back(new taskBlock(12, vector<int>(1,8), vector<float>(1,1), wlkres_zero, 1, {1.0,0.5,0,huge}));
+	// Request supplier support
+	blocksVector.emplace_back(new taskBlock(13, vector<int>(1,14), vector<float>(1,1), wlkres_zero, 1, {3.0,1.0,0,huge}));
+
+
+
+	//Find solution supplier issue
+	blocksVector.emplace_back(new taskBlock(14, vector<int>(1,15), vector<float>(1,1), wlkres_zero, 1, {300.0,30.0,0,huge}));
+	// Provide solution to second level support
+	blocksVector.emplace_back(new taskBlock(15, vector<int>(1,12), vector<float>(1,1), wlkres_zero, 1, {2.0,0.5,0,huge}));
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	//Here we change the signs of the destinations, depending on the resources needed
 	//Negative sign means that no resources are needed for the next block 
@@ -62,7 +127,7 @@ int main()
 
 
     int next{99}, new_pos{0}, aux{0};
-    float next_time, maxtime{10};
+    float next_time, maxtime{1440};
     Group test( blocksVector );
     //Temporany function, it will be removed when the blocks will be inside the group/
     test.readnblocks(nblocks);
