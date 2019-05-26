@@ -76,9 +76,9 @@ int main()
 	//Solution if effective?
 	blocksVector.emplace_back(new xorBlock(3, {nblocks,0}, {0.85,0.15}));
 	//Inform customer the issue is going to be escalated
-	blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_zero, 0, {0,0,0,0}));
+    blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_zero, 0, {0}));
 	//Request 1st level support
-	blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, 0, {0.5,0,0,0}));
+    blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, 0, {0.5}));
 
 	//Find solution 1st level issue
 	blocksVector.emplace_back(new taskBlock(6, vector<int>(1,7), vector<float>(1,1), wlkres_zero, 1, {4.0,0.5,0,huge}));
@@ -87,7 +87,7 @@ int main()
 	// Provide solution to front office
 	blocksVector.emplace_back(new taskBlock(8, vector<int>(1,2), vector<float>(1,1), wlkres_zero, 1, {1.0,0.5,0,huge}));
 	// Request 2nd level support
-	blocksVector.emplace_back(new taskBlock(9, vector<int>(1,10), vector<float>(1,1), wlkres_zero, 0, {0.5,0,0,0}));
+    blocksVector.emplace_back(new taskBlock(9, vector<int>(1,10), vector<float>(1,1), wlkres_zero, 0, {0.5}));
 
 
 	//Find solution 2nd level issue
