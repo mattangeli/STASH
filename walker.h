@@ -9,7 +9,7 @@
 #include "resources.h"
 #include "Wlk_Resources.h"
 #include "block.h"
-
+#include <fstream>
 
 template <class T>
 std::ostream& operator<<(std::ostream& os, const std::vector<T>& vec);
@@ -71,6 +71,9 @@ class walker {
   void release_res(Resources & global_res);
 
 
+
+  void write_stats(std::ofstream & file_name, const int nblocks);
+
   vector<int> get_alloc_res();
 
 };
@@ -89,11 +92,12 @@ class Group {
   std::vector<int> queue, status,running;
   std::vector<float> exec_time;
   vector<unique_ptr<Block>> blocksVector;
-
+  std::ofstream walker_stats;
 public:
-    Group();
+  Group();
 
-	Group( vector<unique_ptr<Block>> & blocksVector_);
+    Group( vector<unique_ptr<Block>> & blocksVector_, std::string name);
+    ~Group(){walker_stats.close();}
 
     void check_stop_evolve();
 
@@ -140,6 +144,8 @@ public:
     float get_exec_time();
 
     float next_walker(int & new_pos);
+
+
 };
   
 

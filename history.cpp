@@ -12,3 +12,6 @@ std::ostream& operator<<(std::ostream& os, const history& v) {
     os << std::endl;
     return os;
 }
+
+
+

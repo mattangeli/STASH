@@ -116,6 +116,27 @@ void walker::removed(const int id){
 
 void walker::add_son(const int id){children_id.push_back(id);}
 
+
+void walker::write_stats(std::ofstream & file_name, const int nblocks){
+  std::vector<int> visits(nblocks, 0);
+  std::vector<float> times(2*nblocks, 0);
+  history to_save;
+  
+  to_save=get_history();
+  auto positions=to_save.get_positions();
+  auto record=to_save.get_times();
+  for (auto i=0; i< positions.size();i++){
+    visits[positions[i]]++;
+    times[2*positions[i]]+=record[2*i];
+    times[2*positions[i]+1]+=record[2*i+1];
+  }
+  for (auto i=0; i<nblocks; i++)
+    file_name<< " "<< visits[i]<< " "<<times[2*i] << " "<< times[2*i+1];
+  file_name<< std::endl;
+
+}
+
+
 /* Overload the << operator for the walker */
 std::ostream& operator<<(std::ostream& os, const walker& w) {
   
@@ -129,12 +150,14 @@ std::ostream& operator<<(std::ostream& os, const walker& w) {
 
 
 
+
+
 Group::Group() :
   nwalker{0},
   next_to_finish{-1},
   totwalker{0},
   nblocks{0},
-        //    walker_list{std::vector<walker>(init_length)},/
+        //    WALKER_list{std::vector<walker>(init_length)},/
   tot_time{0.0},
   walker_list{std::vector<walker>()}    ,
   queue{std::vector<int>()}    ,
@@ -148,7 +171,7 @@ Group::Group() :
   }
 
 
-Group::Group( vector<unique_ptr<Block>> & blocksVector_ ) :
+Group::Group( vector<unique_ptr<Block>> & blocksVector_, std::string name) :
   blocksVector{std::move(blocksVector_)},
   nwalker{0},
   next_to_finish{-1},
@@ -164,6 +187,7 @@ Group::Group( vector<unique_ptr<Block>> & blocksVector_ ) :
   {
   running.push_back(-1);
   exec_time.push_back(0.0);
+  walker_stats.open(name);
   }
 
 //Temporany function, it will be removed when the blocks will be inside the group/
@@ -230,13 +254,13 @@ void Group::end_process(const int running_pos, Resources & tot_res){
   int id{running[running_pos]};
   std::vector<int> dest;
   dest=walker_list[id].get_destination();
-
   walker_list[id].release_res(tot_res);
   //free the resources
   running.erase(running.begin()+running_pos);
   exec_time.erase(exec_time.begin()+running_pos);
   status[id]=0;
   if (dest[0]==nblocks){
+    walker_list[id].write_stats(walker_stats, nblocks);
     walker_list.erase(walker_list.begin()+id);
     status.erase(status.begin()+id);                 
     erased_update(id);
@@ -312,7 +336,7 @@ void Group::check_stop_evolve(Resources & tot_res){
   for (auto i=0;i!=(int)to_stop.size();i++) {
 	
     end_process(to_stop[i]-i, tot_res);
-	}
+  }
 }
 
 

@@ -50,8 +50,20 @@ public:
     void addtimeexe(const float T){record[_skip*(length-1)+2]=T;}
     int len() const noexcept {return length;}
     int skip() const noexcept {return _skip;}
+
+
     const std::vector<int>  get_positions() const noexcept { return positions; }
     const std::vector<float>  get_record() const noexcept { return record; }
+
+    const std::vector<float>  get_times(){
+      std::vector<float> times(2*length);
+      for (auto i=0;i<length; i++){
+	times[2*i]=record[_skip*i+1];
+	times[2*i+1]=record[_skip*i+2];
+      }						
+      return times;
+    }
+
 
     /* This function update the position in the history of the walker */
     void next_step(const int npos){

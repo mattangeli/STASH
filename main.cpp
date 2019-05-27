@@ -210,19 +210,19 @@ int main()
    
     
     /* Initialize Blocks */
-/*
+
 	//First test
-	int nblocks{5};
+    int nblocks{5};
     int idTest;
     for (idTest = 0; idTest < nblocks; ++idTest) {
-		if (idTest == 3) {
-			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest));
-		}
-		else
+      //	if (idTest == 3) {
+      //			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest));
+      //	}
+      //else
 			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkres_zero));
 		
     }
-
+    /*
 	//Second test
 
 	int nblocks{6};
@@ -234,7 +234,7 @@ int main()
 	blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
 
 
-*/
+
 
     int nblocks{16};
 
@@ -328,7 +328,7 @@ int main()
     }
 
 
-
+    */
 
 	//Here we change the signs of the destinations, depending on the resources needed
 	//Negative sign means that no resources are needed for the next block 
@@ -339,7 +339,7 @@ int main()
 
     int next{99}, new_pos{0}, aux{0};
     float next_time, maxtime{(float)inputConf.lookup("globalSettings.maxTime")};
-    Group test( blocksVector );
+    Group test( blocksVector, "wlk_history.dat" );
     //Temporany function, it will be removed when the blocks will be inside the group/
     test.readnblocks(nblocks);
 	//next identifies the next action:
@@ -381,7 +381,7 @@ int main()
     cout << "Simulation completed"<< endl;
 
 
-
+    /*
     #ifdef DEBUG
         // Xor Block Test
         cout << endl << "=============================================" << endl
@@ -402,6 +402,7 @@ int main()
             cout << setfill(' ')  << "    DEBUG::TEST:  " << setw(2) << i << "    " << setw(3) << outcomes[i]*nstars/nrolls << "    " << string(outcomes[i]*nstars/nrolls,'*') << endl;
         }
     #endif
+
 
     #ifdef DEBUG
         // Task Block Time Test #1
@@ -489,12 +490,9 @@ int main()
                  << string(T3outcomes.at(i)*T3nstars/T3nrolls,'*') << endl;
         }
     #endif
+    */
 
 
-
- 	
-
-    return 0;
 }
 
 
