@@ -135,9 +135,6 @@ int main()
             cout << setfill(' ')  << "    DEBUG::TEST:  " << setw(2) << i << "    " << setw(3) << outcomes[i]*nstars/nrolls << "    " << string(outcomes[i]*nstars/nrolls,'*') << endl;
         }
     #endif
-
-
-
  	
 
     return 0;
