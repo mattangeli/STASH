@@ -26,7 +26,9 @@ int main()
     #endif
 
     float huge = numeric_limits<float>::max();
-    cout << "huge= " << huge << endl;
+    #ifdef DEBUG
+        cout << "The numerical infinity is " << huge << endl;
+    #endif
 
     /* ---------------------------
      * CONFIGURATION FILE :: BEGIN
@@ -211,27 +213,27 @@ int main()
     
     /* Initialize Blocks */
 
-	//First test
-    int nblocks{5};
-    int idTest;
-    for (idTest = 0; idTest < nblocks; ++idTest) {
-      //	if (idTest == 3) {
-      //			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest));
-      //	}
-      //else
-			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkres_zero));
+//	//First test
+//    int nblocks{5};
+//    int idTest;
+//    for (idTest = 0; idTest < nblocks; ++idTest) {
+//      //	if (idTest == 3) {
+//      //			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkrestest));
+//      //	}
+//      //else
+//			blocksVector.emplace_back(new taskBlock(idTest, vector<int>(1,idTest+1), vector<float>(1,1), wlkres_zero));
 		
-    }
-    /*
-	//Second test
+//    }
 
-	int nblocks{6};
-	blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
-	blocksVector.emplace_back(new taskBlock(1, vector<int>(1,2), vector<float>(1,1), wlkrestest, 0, {1,0,0,0}));
-	blocksVector.emplace_back(new xorBlock(2, {3,4}, {0.1,0.2}));
-	blocksVector.emplace_back(new taskBlock(3, vector<int>(1,5), vector<float>(1,1), wlkrestest, 0, {1,0,0,0}));
-	blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
-	blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
+//	//Second test
+
+//	int nblocks{6};
+//	blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
+//	blocksVector.emplace_back(new taskBlock(1, vector<int>(1,2), vector<float>(1,1), wlkrestest, 0, {1,0,0,0}));
+//	blocksVector.emplace_back(new xorBlock(2, {3,4}, {0.1,0.2}));
+//	blocksVector.emplace_back(new taskBlock(3, vector<int>(1,5), vector<float>(1,1), wlkrestest, 0, {1,0,0,0}));
+//	blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
+//	blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, 0, {1,0,0,0}));
 
 
 
@@ -328,7 +330,7 @@ int main()
     }
 
 
-    */
+
 
 	//Here we change the signs of the destinations, depending on the resources needed
 	//Negative sign means that no resources are needed for the next block 
