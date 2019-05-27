@@ -43,6 +43,13 @@ public:
 	virtual bool do_need_resources() const {
 		return false;
 	}
+    // Virtual function that returns the next id(s) where
+    // we have to go. Each block type must specify it.
+    // The default is to return EVERY outgoing leg, so
+    // it works for the taskBlock.
+    virtual vector<int> idNext() {
+        return idsOut;
+    }
 	//Nonvirtual function to make sign 
 	//of elements in the idsOut vector negative:
 	//Does not change sign, but always makes it negative
@@ -62,8 +69,13 @@ public:
 class taskBlock : public Block {
 private:
     Wlk_Resources res_needed;
+    unsigned int timeType = 0;
+    vector<float> timeParameters = {0,0,0,0};
+    float procTime = 0.0;
+    default_random_engine randomEngine = default_random_engine(time(NULL));
+    normal_distribution<float> procTimeDist;
 public:
-    taskBlock(int, vector<int>, vector<float>, Wlk_Resources &);
+    taskBlock(int, vector<int>, vector<float>, Wlk_Resources &, unsigned int = 0, vector<float> = {0,0,0,0});
     Wlk_Resources get_res_needed(int len) {
         return res_needed;
     }
@@ -73,10 +85,7 @@ public:
 		return (!res_needed.are_res_zero());
 	}
 	//Return the time needed to complete this task
-	float processing_time() {
-		//Here we should get a random number according to some distribution
-		return id*3.14159265359;
-	}
+    float processing_time();
 };
 
 
@@ -89,7 +98,7 @@ private:
        2    Diverging  -> no more than 1 inLeg
        3    Mixed
     */
-    int gatewayDirection = 0;
+    unsigned int gatewayDirection = 0;
     /* Probability distribution object.
        randomEngine is a sort of seed, while probsOutDist
        is a distribution that returns numbers from 0 to nLegsOut-1
@@ -102,7 +111,7 @@ private:
     default_random_engine randomEngine = default_random_engine(time(NULL));
     discrete_distribution<int> probsOutDist;
 public:
-    xorBlock(int, vector<int>, vector<float>, int = 0);
+    xorBlock(int, vector<int>, vector<float>, unsigned int = 0);
     // Don't need to specify do_need_resources()
     // and processing_time(), since the defaults
     // are already meant for the gates.
@@ -111,7 +120,7 @@ public:
     // It basically picks up one of the idsOut at random or based on
     // the probsOut.
     vector<int> idNext() {
-        return vector<int>{(int)idsOut[probsOutDist(randomEngine)]};
+        return vector<int>{(int)idsOut.at(probsOutDist(randomEngine))};
     }
 };
 

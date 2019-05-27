@@ -1,7 +1,7 @@
 TEMPLATE = app
-CONFIG += console c++11
+CONFIG += console c++11 -g -C
 CONFIG -= app_bundle
-CONFIG -= qt
+CONFIG -= qt 
 
 # Define DEBUG flags
 QMAKE_CXXFLAGS_DEBUG += -DDEBUG 

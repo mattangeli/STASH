@@ -47,7 +47,7 @@ public:
         /* Dimension checks */
             assert(needed.ntypes() == occup.ntypes() && needed.ntypes() == (int)available.size());
 
-        cout << "Allocated the following resources:" << endl;
+        //cout << "Allocated the following resources:" << endl;
 
         /* Go through all the types of resources */
 		bool are_all_res_avail = true; 		  //This refers to the process for which we ask resources now
@@ -55,20 +55,20 @@ public:
         for (int ii=0; ii < (int)available.size(); ii++){
             if (available[ii] >= (needed.get_resources(ii) - occup.get_resources(ii) )) {
                 available[ii] -= (needed.get_resources(ii) - occup.get_resources(ii) );
-                cout << ii << ": " << (needed.get_resources(ii) - occup.get_resources(ii) )  << endl;
+                //cout << ii << ": " << (needed.get_resources(ii) - occup.get_resources(ii) )  << endl;
                 occup.set(ii,needed.get_resources(ii));
 				if (available[ii]>0) any_resources_remaining=true;
             }
             else {
 				occup.set(ii,occup.get_resources(ii) + available[ii] );
-                cout << ii << ": "<< available[ii] << endl;
+                //cout << ii << ": "<< available[ii] << endl;
                 available[ii] = 0;
 				are_all_res_avail = false; //return that there are resources missing -> process can't be started
             }
 
         } //end for loop
 
-	cout << "Resources remaining: " << available[0] << endl;
+	//cout << "Resources remaining: " << available[0] << endl;
 
 		if (are_all_res_avail && any_resources_remaining)   return 1;
 		if (are_all_res_avail && !any_resources_remaining)  return -1;

@@ -22,10 +22,9 @@ void adjust_idsOut_signs(vector<unique_ptr<Block>> & blocksvec) {
 		idsOut = blocksvec[ii]->get_idsOut();
 
 		for (int jj=0; jj<(int)idsOut.size(); jj++) {
-			//It fails as soon as Claudio finishes his changes:
-			//Then we need to change the if condition below
-			assert(idsOut[jj]<(int)blocksvec.size());
-			if (idsOut[jj] != -1) {
+
+			assert(idsOut[jj]<=(int)blocksvec.size());
+			if (idsOut[jj] != (int)blocksvec.size()) {
 				//Ask this block if it needs resources
 				do_need_res=blocksvec[idsOut[jj]]->do_need_resources();
 				//cout << "do_need_res is " << do_need_res << endl;
