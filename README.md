@@ -12,6 +12,13 @@ So far, just standard libraries and `qmake`. You can install it in this way:
 
 As an alternative, you can also use `cmake` (though no support is guaranteed on it).
 
+**Update:** we require a new library for I/O, `libconfig++`. You can install it in this way:
+
++ **Ubuntu:** `sudo apt install libconfig++-dev`
++ **MacOS:** `brew install libconfig`
+
+The discovery of the library in `qmake` and `cmake` is handled via `pkg-config`.
+
 ### Compiling procedure
 
 #### qmake
