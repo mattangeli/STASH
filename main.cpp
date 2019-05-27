@@ -6,6 +6,8 @@
 #include "resources.h"
 #include "adjustidsOut.h"
 #include <limits>
+#include <string>
+#include <libconfig.h++>
 
 #ifdef DEBUG
     #include <iomanip>
@@ -23,7 +25,178 @@ int main()
         cout << "    DEBUG: entering main routine." << endl;
     #endif
 
+    float huge = numeric_limits<float>::max();
+    cout << "huge= " << huge << endl;
 
+    /* ---------------------------
+     * CONFIGURATION FILE :: BEGIN
+     * ---------------------------
+     */
+
+    /* Configuration file filename */
+    string inputconfigFileName = "input.cfg";
+    string inputconfigexampleFileName = "input.example.cfg";
+    /* Configuration file object */
+    libconfig::Config inputConf;
+
+    try {
+        inputConf.readFile(inputconfigFileName.c_str());
+        cout << "The configuration was read from '" << inputconfigFileName << "'." << endl;
+    } catch (const libconfig::FileIOException &fioex) {
+        //throw new libconfig::FileIOException;
+        //exit(EXIT_FAILURE);
+        cerr << "Cannot read the configuration file '" << inputconfigFileName << "': using a standard configuration '" << inputconfigexampleFileName << "' instead." << endl;
+        // Populate the config file.
+        libconfig::Setting &inputConfigRoot = inputConf.getRoot();
+        // Global Settings
+        libconfig::Setting &globalSettings = inputConfigRoot.add("globalSettings", libconfig::Setting::TypeGroup);
+        globalSettings.add("maxTime", libconfig::Setting::TypeFloat) = 1440.0;
+        // Block 00
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_00", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 1;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 4.0;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 0.5;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = huge;
+        }
+        // Block 01
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("xorBlock_01", libconfig::Setting::TypeGroup);
+            currentBlock.add("probOut_02", libconfig::Setting::TypeFloat) = 0.6;
+            currentBlock.add("probOut_04", libconfig::Setting::TypeFloat) = 0.4;
+        }
+        // Block 02
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_02", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 1;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 10.0;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 2.5;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = huge;
+        }
+        // Block 03
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("xorBlock_03", libconfig::Setting::TypeGroup);
+            currentBlock.add("probOut_NB", libconfig::Setting::TypeFloat) = 0.85;
+            currentBlock.add("probOut_00", libconfig::Setting::TypeFloat) = 0.15;
+        }
+        // Block 04
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_04", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 0;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = 0.0;
+        }
+        // Block 05
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_05", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 0;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 0.5;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = 0.0;
+        }
+        // Block 06
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_06", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 1;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 4.0;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 0.5;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = huge;
+        }
+        // Block 07
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("xorBlock_07", libconfig::Setting::TypeGroup);
+            currentBlock.add("probOut_08", libconfig::Setting::TypeFloat) = 0.7;
+            currentBlock.add("probOut_09", libconfig::Setting::TypeFloat) = 0.3;
+        }
+        // Block 08
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_08", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 1;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 1.0;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 0.5;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = huge;
+        }
+        // Block 09
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_09", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 0;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 0.5;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = 0.0;
+        }
+        // Block 10
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_10", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 1;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 7.0;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 1.0;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = huge;
+        }
+        // Block 11
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("xorBlock_11", libconfig::Setting::TypeGroup);
+            currentBlock.add("probOut_12", libconfig::Setting::TypeFloat) = 0.8;
+            currentBlock.add("probOut_13", libconfig::Setting::TypeFloat) = 0.2;
+        }
+        // Block 12
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_12", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 1;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 1.0;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 0.5;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = huge;
+        }
+        // Block 13
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_13", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 1;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 3.0;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 1.0;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = huge;
+        }
+        // Block 14
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_14", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 1;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 300.0;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 30.0;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = huge;
+        }
+        // Block 15
+        {
+            libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_15", libconfig::Setting::TypeGroup);
+            currentBlock.add("timeType", libconfig::Setting::TypeInt) = 1;
+            currentBlock.add("timeMean", libconfig::Setting::TypeFloat) = 2.0;
+            currentBlock.add("timeStd", libconfig::Setting::TypeFloat) = 0.5;
+            currentBlock.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+            currentBlock.add("timeMax", libconfig::Setting::TypeFloat) = huge;
+        }
+        // Write the config file
+        inputConf.writeFile(inputconfigexampleFileName.c_str());
+    } catch (const libconfig::ParseException &pex) {
+        cerr << "The configuration file '" << inputconfigFileName << "' is badly written! " << endl
+             << "Parsing error at " << pex.getFile() << ":" << pex.getLine()
+             << " - " << pex.getError() << endl
+             << "Please use a legit configuration file." << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    /* ---------------------------
+     * CONFIGURATION FILE :: END
+     * ---------------------------
+     */
 
     
     vector<int> tot_res(1);
@@ -63,58 +236,96 @@ int main()
 
 
 
-	float huge = numeric_limits<float>::max();
-	cout << "huge= " << huge << endl; 
+    int nblocks{16};
 
-	int nblocks{16};
-	//Get issue description from customer
-	blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_zero, 1, {4.0,0.5,0,huge}));
-	//Able to provide solution (front office)?
-	blocksVector.emplace_back(new xorBlock(1, {2,4}, {0.6,0.4}));
+
+    //Get issue description from customer
+    {   // <-- DON'T REMOVE THESE, it's a nasty hack for the fucking libconf library (currentBlock has local scope)
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_00");
+        blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
+    //Able to provide solution (front office)?
+    {
+        libconfig::Setting  &currentBlock = inputConf.lookup("xorBlock_01");
+        blocksVector.emplace_back(new xorBlock(1, {2,4}, {(float)currentBlock.lookup("probOut_02"),(float)currentBlock.lookup("probOut_04")}));
+    }
 	//Provide solution to  customer
-	blocksVector.emplace_back(new taskBlock(2, vector<int>(1,3), vector<float>(1,1), wlkres_zero, 1, {10.0,2.5,0,huge}));
-	//Solution if effective?
-	blocksVector.emplace_back(new xorBlock(3, {nblocks,0}, {0.85,0.15}));
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_02");
+        blocksVector.emplace_back(new taskBlock(2, vector<int>(1,3), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
+    //Solution if effective?
+    {
+        libconfig::Setting  &currentBlock = inputConf.lookup("xorBlock_03");
+        blocksVector.emplace_back(new xorBlock(3, {nblocks,0}, {(float)currentBlock.lookup("probOut_NB"),(float)currentBlock.lookup("probOut_00")}));
+    }
 	//Inform customer the issue is going to be escalated
-    blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_zero, 0, {0}));
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_04");
+        blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
 	//Request 1st level support
-    blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, 0, {0.5}));
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_05");
+        blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
+
 
 	//Find solution 1st level issue
-	blocksVector.emplace_back(new taskBlock(6, vector<int>(1,7), vector<float>(1,1), wlkres_zero, 1, {4.0,0.5,0,huge}));
-	// Able to provide 1st level solution?
-	blocksVector.emplace_back(new xorBlock(7, {8,9}, {0.7,0.3}));
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_06");
+        blocksVector.emplace_back(new taskBlock(6, vector<int>(1,7), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
+    // Able to provide 1st level solution?
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("xorBlock_07");
+        blocksVector.emplace_back(new xorBlock(7, {8,9}, {(float)currentBlock.lookup("probOut_08"),(float)currentBlock.lookup("probOut_09")}));
+    }
 	// Provide solution to front office
-	blocksVector.emplace_back(new taskBlock(8, vector<int>(1,2), vector<float>(1,1), wlkres_zero, 1, {1.0,0.5,0,huge}));
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_08");
+        blocksVector.emplace_back(new taskBlock(8, vector<int>(1,2), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
 	// Request 2nd level support
-    blocksVector.emplace_back(new taskBlock(9, vector<int>(1,10), vector<float>(1,1), wlkres_zero, 0, {0.5}));
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_09");
+        blocksVector.emplace_back(new taskBlock(9, vector<int>(1,10), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
 
 
-	//Find solution 2nd level issue
-	blocksVector.emplace_back(new taskBlock(10, vector<int>(1,11), vector<float>(1,1), wlkres_zero, 1, {7.0,1.0,0,huge}));
-	// Able to provide 2nd level solution?
-	blocksVector.emplace_back(new xorBlock(11, {12,13}, {0.8,0.2}));
-	// Provide solution to first level support
-	blocksVector.emplace_back(new taskBlock(12, vector<int>(1,8), vector<float>(1,1), wlkres_zero, 1, {1.0,0.5,0,huge}));
-	// Request supplier support
-	blocksVector.emplace_back(new taskBlock(13, vector<int>(1,14), vector<float>(1,1), wlkres_zero, 1, {3.0,1.0,0,huge}));
+    //Find solution 2nd level issue
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_10");
+        blocksVector.emplace_back(new taskBlock(10, vector<int>(1,11), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
+    // Able to provide 2nd level solution?
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("xorBlock_11");
+        blocksVector.emplace_back(new xorBlock(11, {12,13}, {(float)currentBlock.lookup("probOut_12"),(float)currentBlock.lookup("probOut_13")}));
+    }
+    // Provide solution to first level support
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_12");
+        blocksVector.emplace_back(new taskBlock(12, vector<int>(1,8), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
+    // Request supplier support
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_13");
+        blocksVector.emplace_back(new taskBlock(13, vector<int>(1,14), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
 
 
 
 	//Find solution supplier issue
-	blocksVector.emplace_back(new taskBlock(14, vector<int>(1,15), vector<float>(1,1), wlkres_zero, 1, {300.0,30.0,0,huge}));
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_14");
+        blocksVector.emplace_back(new taskBlock(14, vector<int>(1,15), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
 	// Provide solution to second level support
-	blocksVector.emplace_back(new taskBlock(15, vector<int>(1,12), vector<float>(1,1), wlkres_zero, 1, {2.0,0.5,0,huge}));
-
-
-
-
-
-
-
-
-
-
+    {
+        libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_15");
+        blocksVector.emplace_back(new taskBlock(15, vector<int>(1,12), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+    }
 
 
     */
@@ -127,7 +338,7 @@ int main()
 
 
     int next{99}, new_pos{0}, aux{0};
-    float next_time, maxtime{1440};
+    float next_time, maxtime{(float)inputConf.lookup("globalSettings.maxTime")};
     Group test( blocksVector, "wlk_history.dat" );
     //Temporany function, it will be removed when the blocks will be inside the group/
     test.readnblocks(nblocks);

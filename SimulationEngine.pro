@@ -1,7 +1,8 @@
 TEMPLATE = app
 CONFIG += console c++11 -g -C
 CONFIG -= app_bundle
-CONFIG -= qt 
+CONFIG -= qt
+CONFIG -= no-pkg-config
 
 # Define DEBUG flags
 QMAKE_CXXFLAGS_DEBUG += -DDEBUG 
@@ -24,3 +25,6 @@ HEADERS += \
 
 DISTFILES += \
     CMakeLists.txt
+
+unix: CONFIG += link_pkgconfig
+unix: PKGCONFIG += libconfig++

@@ -25,5 +25,14 @@ include_directories(${PROJECT_SOURCE_DIR})
 #include_directory(${CMAKE_CURRENT_SOURCE_DIR})
 #include_directories( ${CMAKE_BINARY_DIR} )
 
+# libconfig++ via pkg-config
+find_package(PkgConfig)
+pkg_check_modules(LIBCONFIG libconfig++)
+link_directories(${LIBCONFIG_LIBRARY_DIRS})
+include_directories(${LIBCONFIG_INCLUDE_DIRS})
+
 # Compile
 add_executable( ${PROJECT_NAME} ${SOURCES} )
+
+# Link
+target_link_libraries( ${PROJECT_NAME} ${LIBCONFIG_LIBRARIES})
