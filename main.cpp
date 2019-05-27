@@ -6,6 +6,8 @@
 #include "resources.h"
 #include "adjustidsOut.h"
 #include <limits>
+#include <string>
+#include <libconfig.h++>
 
 #ifdef DEBUG
     #include <iomanip>
@@ -23,7 +25,56 @@ int main()
         cout << "    DEBUG: entering main routine." << endl;
     #endif
 
+    float huge = numeric_limits<float>::max();
+    cout << "huge= " << huge << endl;
 
+    /* ---------------------------
+     * CONFIGURATION FILE :: BEGIN
+     * ---------------------------
+     */
+
+    /* Configuration file filename */
+    string inputconfigFileName = "input.cfg";
+    string inputconfigexampleFileName = "input.example.cfg";
+    /* Configuration file object */
+    libconfig::Config inputConf;
+
+    try {
+        inputConf.readFile(inputconfigFileName.c_str());
+        cout << "The configuration was read from '" << inputconfigFileName << "'." << endl;
+    } catch (const libconfig::FileIOException &fioex) {
+        //throw new libconfig::FileIOException;
+        //exit(EXIT_FAILURE);
+        cerr << "Cannot read the configuration file '" << inputconfigFileName << "': using a standard configuration '" << inputconfigexampleFileName << "' instead." << endl;
+        // Populate the config file.
+        libconfig::Setting &inputConfigRoot = inputConf.getRoot();
+        // Block 00
+        libconfig::Setting &taskBlock_00 = inputConfigRoot.add("taskBlock_00", libconfig::Setting::TypeGroup);
+        //libconfig::Setting &taskBlock_00 = inputConfigRoot["taskBlock_00"];
+        taskBlock_00.add("timeType", libconfig::Setting::TypeInt) = 1;
+        taskBlock_00.add("timeMean", libconfig::Setting::TypeFloat) = 4.0;
+        taskBlock_00.add("timeStd", libconfig::Setting::TypeFloat) = 0.5;
+        taskBlock_00.add("timeMin", libconfig::Setting::TypeFloat) = 0.0;
+        taskBlock_00.add("timeMax", libconfig::Setting::TypeFloat) = huge;
+        // Block 01
+        libconfig::Setting &xorBlock_01 = inputConfigRoot.add("xorBlock_01", libconfig::Setting::TypeGroup);
+        xorBlock_01.add("probOut_02", libconfig::Setting::TypeFloat) = 0.6;
+        xorBlock_01.add("probOut_04", libconfig::Setting::TypeFloat) = 0.4;
+        // Write the config file
+        inputConf.writeFile(inputconfigexampleFileName.c_str());
+
+    } catch (const libconfig::ParseException &pex) {
+        cerr << "The configuration file '" << inputconfigFileName << "' is badly written! " << endl
+             << "Parsing error at " << pex.getFile() << ":" << pex.getLine()
+             << " - " << pex.getError() << endl
+             << "Please use a legit configuration file." << endl;
+        exit(EXIT_FAILURE);
+    }
+
+    /* ---------------------------
+     * CONFIGURATION FILE :: END
+     * ---------------------------
+     */
 
     
     vector<int> tot_res(1);
@@ -63,12 +114,11 @@ int main()
 
 */
 
-	float huge = numeric_limits<float>::max();
-	cout << "huge= " << huge << endl; 
-
 	int nblocks{16};
 	//Get issue description from customer
-	blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_zero, 1, {4.0,0.5,0,huge}));
+    blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_zero,
+        (int)inputConf.lookup("taskBlock_00.timeType"),
+        {(float)inputConf.lookup("taskBlock_00.timeMean"),(float)inputConf.lookup("taskBlock_00.timeStd"),(float)inputConf.lookup("taskBlock_00.timeMin"),(float)inputConf.lookup("taskBlock_00.timeMax")}));
 	//Able to provide solution (front office)?
 	blocksVector.emplace_back(new xorBlock(1, {2,4}, {0.6,0.4}));
 	//Provide solution to  customer
