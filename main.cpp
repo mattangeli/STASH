@@ -52,7 +52,7 @@ int main()
         libconfig::Setting &inputConfigRoot = inputConf.getRoot();
         // Global Settings
         libconfig::Setting &globalSettings = inputConfigRoot.add("globalSettings", libconfig::Setting::TypeGroup);
-        globalSettings.add("maxTime", libconfig::Setting::TypeFloat) = 1440.0;
+        globalSettings.add("maxTime", libconfig::Setting::TypeFloat) = 10000.0;
         // Block 00
         {
             libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_00", libconfig::Setting::TypeGroup);
@@ -201,12 +201,23 @@ int main()
      */
 
     
-    vector<int> tot_res(1);
-    tot_res[0]=20;
+    vector<int> tot_res(4);
+    tot_res[0]=28;
+	tot_res[1]=6;
+	tot_res[2]=4;
+	tot_res[3]=14;
     Resources global_res(tot_res);
-    Wlk_Resources wlkrestest(1);
-	Wlk_Resources wlkres_zero(1);
-    wlkrestest.set(0,1);
+	Wlk_Resources wlkres_zero(4);
+	Wlk_Resources wlkres_front(4);
+	Wlk_Resources wlkres_first(4);
+	Wlk_Resources wlkres_second(4);
+	Wlk_Resources wlkres_supplier(4);
+
+	wlkres_front.set(0,1);
+	wlkres_first.set(1,1);
+	wlkres_second.set(2,1);
+	wlkres_supplier.set(3,1);
+
     vector<unique_ptr<Block>> blocksVector;
     //blocksVector.reserve(9); I think we do not need that
    
@@ -244,7 +255,7 @@ int main()
     //Get issue description from customer
     {   // <-- DON'T REMOVE THESE, it's a nasty hack for the fucking libconf library (currentBlock has local scope)
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_00");
-        blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(0, vector<int>(1,1), vector<float>(1,1), wlkres_front, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
     //Able to provide solution (front office)?
     {
@@ -254,7 +265,7 @@ int main()
 	//Provide solution to  customer
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_02");
-        blocksVector.emplace_back(new taskBlock(2, vector<int>(1,3), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(2, vector<int>(1,3), vector<float>(1,1), wlkres_front, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
     //Solution if effective?
     {
@@ -264,19 +275,19 @@ int main()
 	//Inform customer the issue is going to be escalated
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_04");
-        blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(4, vector<int>(1,5), vector<float>(1,1), wlkres_front, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
 	//Request 1st level support
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_05");
-        blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(5, vector<int>(1,6), vector<float>(1,1), wlkres_front, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
 
 
 	//Find solution 1st level issue
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_06");
-        blocksVector.emplace_back(new taskBlock(6, vector<int>(1,7), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(6, vector<int>(1,7), vector<float>(1,1), wlkres_first, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
     // Able to provide 1st level solution?
     {
@@ -286,19 +297,19 @@ int main()
 	// Provide solution to front office
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_08");
-        blocksVector.emplace_back(new taskBlock(8, vector<int>(1,2), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(8, vector<int>(1,2), vector<float>(1,1), wlkres_first, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
 	// Request 2nd level support
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_09");
-        blocksVector.emplace_back(new taskBlock(9, vector<int>(1,10), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(9, vector<int>(1,10), vector<float>(1,1), wlkres_first, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
 
 
     //Find solution 2nd level issue
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_10");
-        blocksVector.emplace_back(new taskBlock(10, vector<int>(1,11), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(10, vector<int>(1,11), vector<float>(1,1), wlkres_second, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
     // Able to provide 2nd level solution?
     {
@@ -308,12 +319,12 @@ int main()
     // Provide solution to first level support
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_12");
-        blocksVector.emplace_back(new taskBlock(12, vector<int>(1,8), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(12, vector<int>(1,8), vector<float>(1,1), wlkres_second, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
     // Request supplier support
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_13");
-        blocksVector.emplace_back(new taskBlock(13, vector<int>(1,14), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(13, vector<int>(1,14), vector<float>(1,1), wlkres_second, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
 
 
@@ -321,12 +332,12 @@ int main()
 	//Find solution supplier issue
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_14");
-        blocksVector.emplace_back(new taskBlock(14, vector<int>(1,15), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(14, vector<int>(1,15), vector<float>(1,1), wlkres_supplier, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
 	// Provide solution to second level support
     {
         libconfig::Setting &currentBlock = inputConf.lookup("taskBlock_15");
-        blocksVector.emplace_back(new taskBlock(15, vector<int>(1,12), vector<float>(1,1), wlkres_zero, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
+        blocksVector.emplace_back(new taskBlock(15, vector<int>(1,12), vector<float>(1,1), wlkres_supplier, (int)currentBlock.lookup("timeType"), {(float)currentBlock.lookup("timeMean"),(float)currentBlock.lookup("timeStd"),(float)currentBlock.lookup("timeMin"),(float)currentBlock.lookup("timeMax")}));
     }
 
 
