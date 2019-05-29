@@ -53,6 +53,12 @@ int main()
         // Global Settings
         libconfig::Setting &globalSettings = inputConfigRoot.add("globalSettings", libconfig::Setting::TypeGroup);
         globalSettings.add("maxTime", libconfig::Setting::TypeFloat) = 10000.0;
+        // Resources
+        libconfig::Setting &resourceSettings = inputConfigRoot.add("resourceSettings", libconfig::Setting::TypeGroup);
+        resourceSettings.add("numRes_00", libconfig::Setting::TypeInt) = 28;
+        resourceSettings.add("numRes_01", libconfig::Setting::TypeInt) = 6;
+        resourceSettings.add("numRes_02", libconfig::Setting::TypeInt) = 4;
+        resourceSettings.add("numRes_03", libconfig::Setting::TypeInt) = 14;
         // Block 00
         {
             libconfig::Setting &currentBlock = inputConfigRoot.add("taskBlock_00", libconfig::Setting::TypeGroup);
@@ -202,10 +208,10 @@ int main()
 
     
     vector<int> tot_res(4);
-    tot_res[0]=28;
-	tot_res[1]=6;
-	tot_res[2]=4;
-	tot_res[3]=14;
+    tot_res[0]=(int)inputConf.lookup("resourceSettings.numRes_00");
+    tot_res[1]=(int)inputConf.lookup("resourceSettings.numRes_01");
+    tot_res[2]=(int)inputConf.lookup("resourceSettings.numRes_02");
+    tot_res[3]=(int)inputConf.lookup("resourceSettings.numRes_03");
     Resources global_res(tot_res);
 	Wlk_Resources wlkres_zero(4);
 	Wlk_Resources wlkres_front(4);
