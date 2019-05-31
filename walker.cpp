@@ -201,7 +201,7 @@ void Group::readnblocks(int _nblocks){
 
 void Group::create_walker(const int pos, const int par_id,
 			  const int my_id, const int ntype_res){
-  cout << "Creating walker with id " << my_id << " at time " << tot_time << endl;
+  //cout << "Creating walker with id " << my_id << " at time " << tot_time << endl;
   walker_list.push_back(walker(pos,par_id, my_id, tot_time,  ntype_res));
   if (par_id!=my_id) walker_list[par_id].add_son(my_id);
   status.push_back(0);
@@ -265,7 +265,7 @@ void Group::end_process(const int running_pos, Resources & tot_res){
     status.erase(status.begin()+id);                 
     erased_update(id);
     nwalker--;        
-    std::cout <<"Killing walker "<< id << " at time " << tot_time <<std::endl;
+    //std::cout <<"Killing walker "<< id << " at time " << tot_time <<std::endl;
   }
   else {
     walker_list[id].moveto(abs(dest[0]));
@@ -360,7 +360,7 @@ void Group::check_queue(Resources & global_res){
 			      queue[queue_pos], dest, process_time, global_res);
 
     if (abs(do_start)==1) {
-	cout << ii<< " Starting walker " << queue[queue_pos] << " at time " << tot_time << " at Block " << walkerpos <<": process_time = " << process_time << endl;
+	//cout << ii<< " Starting walker " << queue[queue_pos] << " at time " << tot_time << " at Block " << walkerpos <<": process_time = " << process_time << endl;
 	activate_process(queue[queue_pos], process_time, dest, queue_pos);
 	queue_pos--;
     }
